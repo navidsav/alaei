@@ -1,0 +1,16 @@
+{
+    "MOBILE_API_PORT": 65000,
+    "DB_URI": "mongodb://root:M0ng02088ION@9562ex@127.0.0.1:27017/",
+    "MOBILE_DB_NAME": "auto_gallery",
+    "REDIS_URI": "redis://127.0.0.1:6379",
+    "JWT_SECRET": "auto_masoud_aliakbar",
+    "SMS_PANEL_USERNAME": "9198652818",
+    "SMS_PANEL_PASSWORD": "Anad@1400",
+    "SMS_PANEL_REGISTER_TEXT_BODY_ID": "74012",
+    "SMS_PANEL_FORGOT_PASS_TEXT_BODY_ID": "74028",
+    "CDN_URL": "https://cdn.v2.magicarmobile.ir/",
+    "HAS_BEEN_SENT": 152360,
+    "HAS_BEEN_RECIEVED": 152372,
+    "HAS_BEEN_READ": 152373,
+    "JUST_REGISTERED": 162381
+}
