@@ -117,21 +117,22 @@ router.post("/sendsms", async (req, res) => {
 // ############################################
 // ############################################
 
-router.post("/saveMagicarUser", async (req, res) => {
+router.post("/register", async (req, res) => {
   try {
 
-    const { FirstName, LastName, UserName, Password, MobileNo, Code } = req.body;
+    const { FirstName, LastName, Password, MobileNo, NationalCode } = req.body;
     const user = await User.findOne({ "phoneNumber": MobileNo });
-    if (!(FirstName && LastName && UserName && Password && MobileNo)) {
-      return responseHandler.nokResponse(res, "one of FirstName,LastName,UserName,Password,MobileNo are null", {})
+    if (!(FirstName && LastName && NationalCode && Password && MobileNo)) {
+      return responseHandler.nokResponse(res, "one of FirstName,LastName,NationalCode,Password,MobileNo are null", {})
     }
 
     if (user && user.status == "phone_verified") {
       // Hash password
       const salt = await bcrypt.genSalt(10);
       const hashedPassword = await bcrypt.hash(Password + salt, 10);
-      user.username = UserName
+      user.username = user.phoneNumber
       user.firstName = FirstName
+      user.nationalCode = NationalCode
       user.lastName = LastName
       user.password = hashedPassword
       user.salt = salt
@@ -254,35 +255,6 @@ router.post("/ValidationSMSCode", async (req, res) => {
 
 
 
-
-// ############################################
-// ############################################
-// ############################################
-// REGISTER
-router.post("/register", async (req, res) => {
-  try {
-
-    const { username, phoneNumber, password } = req.body;
-
-    // Check if user exists
-    let user = await User.findOne({ username });
-    //TODO: the reponse can be attacked and fuzzed :-(
-    if (user) return responseHandler.nokResponse(res, `User with this username (${username}) already exists`);
-
-    // Hash password
-    const salt = await bcrypt.genSalt(10);
-    const hashedPassword = await bcrypt.hash(password + salt, 10);
-    // Save user
-    user = new User({ username, phoneNumber, password: hashedPassword, salt });
-    await user.save();
-
-    return responseHandler.okResponse(res, "User registered successfully", {})
-  } catch (error) {
-
-    return responseHandler.errorResponse(res, "Server error", {})
-
-  }
-});
 
 // LOGIN 
 router.post("/login", async (req, res) => {

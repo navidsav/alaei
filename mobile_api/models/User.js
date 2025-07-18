@@ -3,6 +3,7 @@ const Schema = mongoose.Schema;
 
 const UserSchema = new mongoose.Schema({
   firstName: { type: String },
+  nationalCode: { type: String },
   lastName: { type: String },
   username: { type: String },
   phoneNumber: { type: String, required: true, unique: true },
@@ -14,14 +15,14 @@ const UserSchema = new mongoose.Schema({
   registeredCars: [
     {
       status: { type: String, required: true, enum: ["complete", "pending"] },
-     
+
       carInfo: {
         numberPlate: { type: String },
         carModelId: Schema.Types.ObjectId,
         carColorId: Schema.Types.ObjectId,
         mileage: { type: Number }
       },
-   
+
 
 
     },
