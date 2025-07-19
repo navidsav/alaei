@@ -275,7 +275,7 @@ router.post("/login", async (req, res) => {
 
     res.cookie('token', token, {
       httpOnly: true,       // Helps prevent XSS
-      secure: true,         // Use true if using HTTPS
+      secure: false,         // Use true if using HTTPS
       sameSite: 'Strict',   // or 'Lax' or 'None' (use 'None' if cross-site)
       maxAge: 31536000000       // 1 year in ms
     });
