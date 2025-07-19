@@ -293,7 +293,7 @@ router.post("/login", async (req, res) => {
 // ############################################
 // ############################################
 // RESET PASSWORD
-router.post("/ResetCurrentPassword", authMiddleware, async (req, res) => {
+router.post("/resetpassword", authMiddleware, async (req, res) => {
   try {
 
     const { currentPassword, newPassword, confirmNewPassword } = req.body;

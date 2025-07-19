@@ -6,13 +6,15 @@ const carRoutes = require("./routes/cars");
 const constantRoutes = require("./routes/constant");
 const bodyParser = require("body-parser");
 const authMiddleware = require("./middleware/auth");
-
+const cookieParser = require('cookie-parser');
 
 
 
 const app = express()
 const port = config.MOBILE_API_PORT
 app.use(bodyParser.json());
+app.use(cookieParser());
+
 
 mongoose.connect(`${config.DB_URI}/${config.MOBILE_DB_NAME}?authSource=admin`, {
   useNewUrlParser: true,
