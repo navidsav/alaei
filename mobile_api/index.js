@@ -22,10 +22,12 @@ app.use(cors({
   origin: function (origin, callback) {
     // Allow requests with no origin (like mobile apps or curl)
     // if (!origin) return callback(null, true);
-    if (allowedOrigins.includes(origin)) {
-      callback(null, true);
+    if (origin && allowedOrigins.includes(origin)) {
+      callback(null, { origin: true, credentials: true });
+
     } else {
-      callback(new Error('Not allowed by CORS'));
+      callback(null, { origin: false }); // Prevents CORS headers from being set
+
     }
   },
   credentials: true // if you need to allow cookies/authorization headers
