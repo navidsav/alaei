@@ -7,13 +7,29 @@ const constantRoutes = require("./routes/constant");
 const bodyParser = require("body-parser");
 const authMiddleware = require("./middleware/auth");
 const cookieParser = require('cookie-parser');
-
+const cors = require('cors')
 
 
 const app = express()
 const port = config.MOBILE_API_PORT
 app.use(bodyParser.json());
 app.use(cookieParser());
+
+
+const allowedOrigins = ['https://auto-gallery-hazel.vercel.app', 'http://localhost:3000'];
+
+app.use(cors({
+  origin: function (origin, callback) {
+    // Allow requests with no origin (like mobile apps or curl)
+    if (!origin) return callback(null, true);
+    if (allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
+  credentials: true // if you need to allow cookies/authorization headers
+}))
 
 
 mongoose.connect(`${config.DB_URI}/${config.MOBILE_DB_NAME}?authSource=admin`, {
