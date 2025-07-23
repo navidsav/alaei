@@ -5,6 +5,7 @@ const logger = require("../../common/logger");
 const mongo = require('@intugine-technologies/mongodb');
 const mongodb = require("mongodb");
 
+const config = require("../../config.json")
 
 const router = express.Router();
 
