@@ -16,23 +16,24 @@ app.use(bodyParser.json());
 app.use(cookieParser());
 
 
-const allowedOrigins = ['https://auto-gallery-hazel.vercel.app', 'http://localhost:3000'];
+const allowedOrigins = [
+  'https://auto-gallery-hazel.vercel.app'
+];
 
 app.use(cors({
   origin: function (origin, callback) {
     // Allow requests with no origin (like mobile apps or curl)
-    // if (!origin) return callback(null, true);
-    if (allowedOrigins.includes(origin)) {
-      callback(null, { origin: true, credentials: true });
+    if (!origin) return callback(null, false);
 
+    const isLocalhost = /^http:\/\/localhost:\d+$/.test(origin);
+    if (allowedOrigins.includes(origin) || isLocalhost) {
+      callback(null, true);
     } else {
-      callback(null, { origin: false }); // Prevents CORS headers from being set
-
+      callback(null, false); // CORS headers will not be set
     }
   },
-  credentials: true // if you need to allow cookies/authorization headers
-}))
-
+  credentials: true
+}));
 
 mongoose.connect(`${config.DB_URI}/${config.MOBILE_DB_NAME}?authSource=admin`, {
   useNewUrlParser: true,
