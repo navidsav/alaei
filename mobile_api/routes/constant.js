@@ -9,7 +9,7 @@ const config = require("../../config.json")
 
 const router = express.Router();
 
-const db = {};
+let db = {};
 
 
 router.get("/color", async (req, res) => {
