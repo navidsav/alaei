@@ -454,11 +454,11 @@ router.post("/ForgotPassWord", async (req, res) => {
 
 });
 
-router.delete('/logout',authMiddleware, async (req, res) => {
-  res.clearCookie('token', { httpOnly: true, secure: true, sameSite: 'Strict' });
+router.delete('/logout', authMiddleware, async (req, res) => {
   const isOnline = await redis_client.del(`online:${req.user.id}`);
+  res.clearCookie('token', { httpOnly: true, secure: true, sameSite: 'Strict' });
 
-  res.json({ message: 'Logged out' });
+  return responseHandler.okResponse(res, 'Logged out', {});
 });
 
 // (async () => {
