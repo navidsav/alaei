@@ -2,7 +2,6 @@ const express = require("express");
 const ColorModel = require("../models/ColorModel");
 const response_handler = require("./response_handler");
 const logger = require("../../common/logger");
-const { querymen, Schema } = require('querymen');
 
 
 const router = express.Router();
