@@ -3,12 +3,17 @@ const MelipayamakApi = require('melipayamak')
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const User = require("../models/User");
-const config = require("../../config")
+const config = require("../../config.json")
 const moment = require('moment');
 const responseHandler = require("./response_handler");
 const authMiddleware = require("../middleware/auth");
 const logger = require("../../common/logger");
-
+const redis = require("redis");
+const { json } = require("body-parser");
+const redis_client = redis.createClient({
+  url: config.REDIS_URI,
+  legacyMode: true
+});
 
 const username = config.SMS_PANEL_USERNAME;
 const password = config.SMS_PANEL_PASSWORD;
@@ -273,12 +278,16 @@ router.post("/login", async (req, res) => {
     // Generate JWT
     const token = jwt.sign({ id: user._id }, config.JWT_SECRET, { expiresIn: "365d" });
 
+
+    const maxAge = 31536000000;
     res.cookie('token', token, {
       httpOnly: true,       // Helps prevent XSS
       secure: false,         // Use true if using HTTPS
       sameSite: 'Strict',   // or 'Lax' or 'None' (use 'None' if cross-site)
-      maxAge: 31536000000       // 1 year in ms
+      maxAge: maxAge       // 1 year in ms
     });
+
+    redis_client.set(`online:${user._id}`, token, 'EX', maxAge); // 1-hour expiry
 
     res.json({ token, user: { id: user._id, username: user.username.toLowerCase(), fullname: `${user.firstName} ${user.lastName}` }, IsSuccessful: true });
   } catch (error) {
@@ -287,6 +296,15 @@ router.post("/login", async (req, res) => {
   }
 });
 
+
+
+router.get("/amIOnline", authMiddleware, async (req, res) => {
+  const isOnline = await redis_client.exists(`online:${req.user.id}`);
+
+  responseHandler.okResponse(res, "Is online", { is_online: isOnline })
+
+
+})
 
 
 // ############################################
