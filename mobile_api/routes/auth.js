@@ -436,7 +436,7 @@ router.post("/ForgotPassWord", async (req, res) => {
 
 });
 
-router.post('/logout', (req, res) => {
+router.delete('/logout', (req, res) => {
   res.clearCookie('token', { httpOnly: true, secure: true, sameSite: 'Strict' });
   res.json({ message: 'Logged out' });
 });
