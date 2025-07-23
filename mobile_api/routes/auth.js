@@ -10,6 +10,7 @@ const authMiddleware = require("../middleware/auth");
 const logger = require("../../common/logger");
 const redis = require("redis");
 const { json } = require("body-parser");
+const response_handler = require("./response_handler");
 const redis_client = redis.createClient({
   url: config.REDIS_URI,
   legacyMode: true
@@ -289,6 +290,7 @@ router.post("/login", async (req, res) => {
 
     redis_client.set(`online:${user._id}`, token, 'EX', maxAge); // 1-hour expiry
 
+    return response_handler.okResponse(res,"Successfully logged in!",{user:{ id: user._id, username: user.username.toLowerCase(), fullname: `${user.firstName} ${user.lastName}` }})
     res.json({ token, user: { id: user._id, username: user.username.toLowerCase(), fullname: `${user.firstName} ${user.lastName}` }, IsSuccessful: true });
   } catch (error) {
     responseHandler.errorResponse(res, "Server error", {})
