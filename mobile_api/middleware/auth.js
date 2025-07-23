@@ -10,10 +10,10 @@ const response_handler = require("../routes/response_handler");
 
 module.exports = function (req, res, next) {
 
-  console.log(" ss: " , req.cookies)
+  console.log(" ss: ", req.cookies)
   const token = req.cookies.token || req.headers.authorization?.split(' ')[1];
 
-  if (!token) return res.status(401).json({ message: "No token, authorization denied" });
+  if (!token) return response_handler.forbiddenResponse(res, "No token, authorization denied", {});
 
   try {
     const decoded = jwt.verify(token.replace("Bearer ", ""), config.JWT_SECRET);
