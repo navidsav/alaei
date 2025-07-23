@@ -37,7 +37,7 @@ function queryBuilder(req, res, next) {
   req.mongoQuery = query;
   next();
 }
-router.get("/getbrands", queryBuilder, async (req, res) => {
+router.get("/getbrands", async (req, res) => {
 
   try {
 
