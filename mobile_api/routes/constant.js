@@ -104,8 +104,7 @@ router.post("/getModelsByBrand", queryBuilder, async (req, res) => {
       aggregation.push(
         {
           $match: {
-            "_id": new mongodb.ObjectId(brandId),
-            "CarModels.CarModelTitle": { $regex: model }
+            "_id": new mongodb.ObjectId(brandId)
           }
         },
         {
@@ -135,7 +134,11 @@ router.post("/getModelsByBrand", queryBuilder, async (req, res) => {
           $project: {
             "CarModelTitle": 1
           }
+        }, {
+        $match: {
+          "CarModelTitle": { $regex: model }
         }
+      }
       );
     }
 
