@@ -134,11 +134,12 @@ router.post("/getModelsByBrand", queryBuilder, async (req, res) => {
           $project: {
             "CarModelTitle": 1
           }
-        }, {
-        $match: {
-          "CarModelTitle": { $regex: model }
+        },
+        {
+          $match: {
+            "CarModelTitle": { $regex: model }
+          }
         }
-      }
       );
     }
 
@@ -153,6 +154,7 @@ router.post("/getModelsByBrand", queryBuilder, async (req, res) => {
       });
     }
 
+    console.log(" cc : ", aggregation)
 
     const cars = await db.aggregate("carbrands", aggregation);
 
