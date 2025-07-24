@@ -38,7 +38,7 @@ function queryBuilder(req, res, next) {
   if (minYear) query.year = { ...query.year, $gte: Number(minYear) };
   if (maxPrice) query.price = { ...query.price, $lte: Number(maxPrice) };
   if (pageNum && perpage) query.limit = parseInt(perpage);
-  if (pageNum && perpage) query.skip = parseInt((pageNum - 1) * perpage);
+  if (pageNum && perpage) query.skip = parseInt((pageNum) * perpage);
 
   req.mongoQuery = query;
   next();
