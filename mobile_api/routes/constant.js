@@ -30,25 +30,40 @@ router.get("/color", async (req, res) => {
 
 function queryBuilder(req, res, next) {
   const query = {};
-  const { brand, minYear, maxPrice } = req.query;
+  const { brand, minYear, maxPrice, pageNum, perpage } = req.query;
 
   if (brand) query.brand = brand;
   if (minYear) query.year = { ...query.year, $gte: Number(minYear) };
   if (maxPrice) query.price = { ...query.price, $lte: Number(maxPrice) };
+  if (limit) query.limit = perpage;
+  if (skip) query.skip = (pageNum - 1) * perpage;
 
   req.mongoQuery = query;
   next();
 }
-router.get("/getbrands",queryBuilder, async (req, res) => {
+router.get("/getbrands", queryBuilder, async (req, res) => {
 
   try {
 
-    const cars = await db.aggregate("carbrands", [{
-      $match: {
-        "BrandTitle": { $regex:req.mongoQuery.brand }
-      }
-    }])
-
+    let aggregation = [];
+    if (req.mongoQuery.skip) {
+      aggregation.push({
+        $skip: req.mongoQuery.skip
+      });
+    }
+    if (req.mongoQuery.limit) {
+      aggregation.push({
+        $limit: req.mongoQuery.limit
+      });
+    }
+    if (req.mongoQuery.brand) {
+      aggregation.push({
+        $match: {
+          "BrandTitle": { $regex: req.mongoQuery.brand }
+        },
+      });
+    }
+    const cars = await db.aggregate("carbrands", aggregation);
 
     // Respond with the car details
     return response_handler.okResponse(res, "here you are", cars)
