@@ -51,16 +51,7 @@ router.get("/getbrands", queryBuilder, async (req, res) => {
     const { brand, minYear, maxPrice } = req.query;
 
     let aggregation = [];
-    if (req.mongoQuery.skip) {
-      aggregation.push({
-        $skip: req.mongoQuery.skip
-      });
-    }
-    if (req.mongoQuery.limit) {
-      aggregation.push({
-        $limit: req.mongoQuery.limit
-      });
-    }
+
     if (brand) {
       aggregation.push(
         {
@@ -77,6 +68,17 @@ router.get("/getbrands", queryBuilder, async (req, res) => {
         }
       );
     }
+    if (req.mongoQuery.skip) {
+      aggregation.push({
+        $skip: req.mongoQuery.skip
+      });
+    }
+    if (req.mongoQuery.limit) {
+      aggregation.push({
+        $limit: req.mongoQuery.limit
+      });
+    }
+
     const cars = await db.aggregate("carbrands", aggregation);
 
     // Respond with the car details
