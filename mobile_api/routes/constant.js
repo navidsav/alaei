@@ -91,7 +91,7 @@ router.get("/getbrands", queryBuilder, async (req, res) => {
 // ############################################
 // ############################################
 // ############################################
-router.post("/getModelByBrand", queryBuilder, async (req, res) => {
+router.post("/getModelsByBrand", queryBuilder, async (req, res) => {
 
   try {
 
