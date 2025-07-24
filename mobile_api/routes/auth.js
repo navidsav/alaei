@@ -283,8 +283,8 @@ router.post("/login", async (req, res) => {
     const maxAge = 31536000000;
     res.cookie('token', token, {
       httpOnly: true,       // Helps prevent XSS
-      secure: false,         // Use true if using HTTPS
-      sameSite: 'Strict',   // or 'Lax' or 'None' (use 'None' if cross-site)
+      secure: true,         // Use true if using HTTPS
+      sameSite: 'None',   // or 'Lax' or 'None' (use 'None' if cross-site)
       maxAge: maxAge       // 1 year in ms
     });
 
@@ -458,7 +458,7 @@ router.post("/ForgotPassWord", async (req, res) => {
 
 router.delete('/logout', authMiddleware, async (req, res) => {
   const isOnline = await redis_client.del(`online:${req.user.id}`);
-  res.clearCookie('token', { httpOnly: true, secure: true, sameSite: 'Strict' });
+  res.clearCookie('token', { httpOnly: true, secure: true, sameSite: 'None' });
 
   return responseHandler.okResponse(res, 'Logged out', {});
 });
