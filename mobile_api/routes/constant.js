@@ -156,8 +156,6 @@ router.post("/getModelsByBrand", queryBuilder, async (req, res) => {
       });
     }
 
-    console.log(" cc : ", JSON.stringify(aggregation))
-
     const cars = await db.aggregate("carbrands", aggregation);
 
     // Respond with the car details
@@ -168,6 +166,136 @@ router.post("/getModelsByBrand", queryBuilder, async (req, res) => {
   }
 });
 
+
+// ############################################
+// ############################################
+// ############################################
+router.get("/getProductionYears", queryBuilder, async (req, res) => {
+
+  try {
+
+    const years = [];
+    for (let i = 1370; i < 1405; ++i) {
+      years.push(i);
+    }
+
+    // Respond with the car details
+    return response_handler.okResponse(res, "here you are", years)
+  } catch (error) {
+    logger.error({ event: "HTTP GET ERROR ", error: error?.message })
+    response_handler.errorResponse(res, "Server error", error)
+  }
+});
+
+
+// ############################################
+// ############################################
+// ############################################
+router.post("/getTrimsByModel", queryBuilder, async (req, res) => {
+
+  try {
+
+    const { trim, minYear, maxPrice } = req.query;
+    const { modelId } = req.body;
+
+    let aggregation = [];
+
+    if (trim) {
+      aggregation.push(
+        {
+          $unwind: {
+            path: "$CarModels"
+          }
+        },
+        {
+          $project: {
+            _id: 0,
+            CarModel: "$CarModels"
+          }
+        },
+        {
+          $project: {
+            CarModel: 1
+          }
+        },
+        {
+          $replaceRoot: {
+            newRoot: {
+              $mergeObjects: ["$CarModel", "$$ROOT"]
+            }
+          }
+        },
+        {
+          $project: {
+            "CarModel.CarModelDetails": 1
+          }
+        },
+        {
+          $match: {
+            _id: new mongodb.ObjectId(modelId)
+          }
+        },
+        {
+          $replaceRoot: {
+            newRoot: {
+              $mergeObjects: ["$CarModel", "$$ROOT"]
+            }
+          }
+        },
+        {
+          $unwind: {
+            path: "$CarModelDetails"
+          }
+        },
+        {
+          $project: {
+            _id: 0,
+            CarModelDetail: "$CarModelDetails"
+          }
+        },
+        {
+          $replaceRoot: {
+            newRoot: {
+              $mergeObjects: [
+                "$CarModelDetail",
+                "$$ROOT"
+              ]
+            }
+          }
+        },
+        {
+          $project: {
+            CarModelDetailTitle: 1
+          }
+        },
+        {
+          $match: {
+            "CarModelDetailTitle": { $regex: trim }
+          }
+        }
+      );
+    }
+
+    if (req.mongoQuery.skip) {
+      aggregation.push({
+        $skip: req.mongoQuery.skip
+      });
+    }
+    if (req.mongoQuery.limit) {
+      aggregation.push({
+        $limit: req.mongoQuery.limit
+      });
+    }
+
+    const cars = await db.aggregate("carbrands", aggregation);
+
+    // Respond with the car details
+    return response_handler.okResponse(res, "here you are", cars)
+  } catch (error) {
+    logger.error({ event: "HTTP GET BRANDS ERROR ", error: error?.message })
+    response_handler.errorResponse(res, "Server error", error)
+  }
+});
 
 
 
