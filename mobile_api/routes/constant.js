@@ -32,6 +32,8 @@ function queryBuilder(req, res, next) {
   const query = {};
   const { brand, minYear, maxPrice, pageNum, perpage } = req.query;
 
+  console.log("    ss : " ,  req.query)
+
   if (brand) query.brand = brand;
   if (minYear) query.year = { ...query.year, $gte: Number(minYear) };
   if (maxPrice) query.price = { ...query.price, $lte: Number(maxPrice) };
