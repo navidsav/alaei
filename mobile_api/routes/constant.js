@@ -154,7 +154,7 @@ router.post("/getModelsByBrand", queryBuilder, async (req, res) => {
       });
     }
 
-    console.log(" cc : ", aggregation)
+    console.log(" cc : ", JSON.stringify(aggregation))
 
     const cars = await db.aggregate("carbrands", aggregation);
 
