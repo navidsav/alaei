@@ -30,22 +30,25 @@ router.get("/color", async (req, res) => {
 
 function queryBuilder(req, res, next) {
   const query = {};
-  const { brand, minYear, maxPrice, pageNum, perpage } = req.query;
+  const { pageNum, perpage } = req.query;
 
-  console.log("    ss : ", req.query)
-
-  if (brand) query.brand = brand;
-  if (minYear) query.year = { ...query.year, $gte: Number(minYear) };
-  if (maxPrice) query.price = { ...query.price, $lte: Number(maxPrice) };
   if (pageNum && perpage) query.limit = parseInt(perpage);
   if (pageNum && perpage) query.skip = parseInt((pageNum) * perpage);
 
   req.mongoQuery = query;
   next();
 }
+
+
+
+// ############################################
+// ############################################
+// ############################################
 router.get("/getbrands", queryBuilder, async (req, res) => {
 
   try {
+
+    const { brand, minYear, maxPrice } = req.query;
 
     let aggregation = [];
     if (req.mongoQuery.skip) {
@@ -58,12 +61,21 @@ router.get("/getbrands", queryBuilder, async (req, res) => {
         $limit: req.mongoQuery.limit
       });
     }
-    if (req.mongoQuery.brand) {
-      aggregation.push({
-        $match: {
-          "BrandTitle": { $regex: req.mongoQuery.brand }
+    if (brand) {
+      aggregation.push(
+        {
+          $match: {
+            "BrandTitle": { $regex: brand }
+          },
         },
-      });
+        {
+          $project: {
+            _id: 1,
+            BrandTitle: 1,
+            BrandLogoUrl: 1
+          }
+        }
+      );
     }
     const cars = await db.aggregate("carbrands", aggregation);
 
@@ -76,6 +88,78 @@ router.get("/getbrands", queryBuilder, async (req, res) => {
 });
 
 
+// ############################################
+// ############################################
+// ############################################
+router.post("/getModelByBrand", queryBuilder, async (req, res) => {
+
+  try {
+
+    const { model, minYear, maxPrice } = req.query;
+    const { brandId } = req.body;
+
+    let aggregation = [];
+
+    if (model) {
+      aggregation.push(
+        {
+          $match: {
+            "_id": new mongodb.ObjectId(brandId),
+            "CarModels.CarModelTitle": { $regex: model }
+          }
+        },
+        {
+          $unwind: {
+            path: "$CarModels"
+          }
+        },
+        {
+          $project: {
+            _id: 0,
+            CarModel: "$CarModels"
+          }
+        },
+        {
+          $project: {
+            CarModel: 1
+          }
+        },
+        {
+          $replaceRoot: {
+            newRoot: {
+              $mergeObjects: ["$CarModel", "$$ROOT"]
+            }
+          }
+        },
+        {
+          $project: {
+            "CarModelTitle": 1
+          }
+        }
+      );
+    }
+
+    if (req.mongoQuery.skip) {
+      aggregation.push({
+        $skip: req.mongoQuery.skip
+      });
+    }
+    if (req.mongoQuery.limit) {
+      aggregation.push({
+        $limit: req.mongoQuery.limit
+      });
+    }
+
+
+    const cars = await db.aggregate("carbrands", aggregation);
+
+    // Respond with the car details
+    return response_handler.okResponse(res, "here you are", cars)
+  } catch (error) {
+    logger.error({ event: "HTTP GET BRANDS ERROR ", error: error?.message })
+    response_handler.errorResponse(res, "Server error", error)
+  }
+});
 
 
 
