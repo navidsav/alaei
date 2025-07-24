@@ -32,13 +32,13 @@ function queryBuilder(req, res, next) {
   const query = {};
   const { brand, minYear, maxPrice, pageNum, perpage } = req.query;
 
-  console.log("    ss : " ,  req.query)
+  console.log("    ss : ", req.query)
 
   if (brand) query.brand = brand;
   if (minYear) query.year = { ...query.year, $gte: Number(minYear) };
   if (maxPrice) query.price = { ...query.price, $lte: Number(maxPrice) };
-  if (pageNum && perpage) query.limit = perpage;
-  if (pageNum && perpage) query.skip = (pageNum - 1) * perpage;
+  if (pageNum && perpage) query.limit = parseInt(perpage);
+  if (pageNum && perpage) query.skip = parseInt((pageNum - 1) * perpage);
 
   req.mongoQuery = query;
   next();
