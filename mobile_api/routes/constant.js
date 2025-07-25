@@ -5,7 +5,11 @@ const logger = require("../../common/logger");
 const mongo = require('@intugine-technologies/mongodb');
 const mongodb = require("mongodb");
 
-const config = require("../../config.json")
+const config = require("../../config.json");
+const delivery_status = require("../../common/car/delivery_status");
+const body_status = require("../../common/car/body_status");
+const colors = require("../../common/car/colors");
+const colors_interior = require("../../common/car/colors_interior");
 
 const router = express.Router();
 
@@ -294,6 +298,46 @@ router.post("/getTrimsByModel", queryBuilder, async (req, res) => {
 
 
 
+// ############################################
+// ############################################
+// ############################################
+router.get("getDeliveryStatus", async (req, res) => {
+
+  return response_handler.okResponse(res, "Car Status and usages and delivery", { states: delivery_status })
+
+})
+
+
+
+// ############################################
+// ############################################
+// ############################################
+router.get("getDeliveryStatus", async (req, res) => {
+
+  return response_handler.okResponse(res, "Car Status and usages and delivery", { states: delivery_status })
+
+})
+
+
+// ############################################
+// ############################################
+// ############################################
+router.get("getBodyStatus", async (req, res) => {
+
+
+  return response_handler.okResponse(res, "Car Body Status", { states: body_status })
+
+})
+
+
+// ############################################
+// ############################################
+// ############################################
+router.get("getColors", async (req, res) => {
+
+  return response_handler.okResponse(res, "Car Colors", { interior_color: colors_interior, color: colors })
+
+})
 
 mongo(config.DB_URI, config.MOBILE_DB_NAME)
   .then(async (DB) => {
