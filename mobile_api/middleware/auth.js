@@ -10,7 +10,6 @@ const response_handler = require("../routes/response_handler");
 
 module.exports = function (req, res, next) {
 
-  console.log(" ss: ", req.cookies)
   const token = req.cookies.token || req.headers.authorization?.split(' ')[1];
 
   if (!token) return response_handler.forbiddenResponse(res, "No token, authorization denied", {});
