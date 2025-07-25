@@ -1,7 +1,7 @@
 module.exports = {
     apps: [
         {
-            name: "Mobile API Server",
+            name: "Auto Gallery Mobile API Server",
             script: "./mobile_api/index.js",
             out_file: "./logs/mobile_api_out.log",
             error_file: "./logs/mobile_api_error.log",

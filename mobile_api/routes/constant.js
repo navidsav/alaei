@@ -53,7 +53,7 @@ router.get("/getbrands", queryBuilder, async (req, res) => {
     brand = brand == undefined || brand == null ? "" : brand;
     let aggregation = [{
       $match: {
-        "BrandTitle": { $regex: brand }
+        "BrandTitle": { $regex: brand, $options: "i" }
       },
     },
     {
@@ -99,44 +99,46 @@ router.post("/getModelsByBrand", queryBuilder, async (req, res) => {
 
     const { brandId } = req.body;
 
-    let aggregation = [{
-      $match: {
-        "_id": new mongodb.ObjectId(brandId)
-      }
-    },
-    {
-      $unwind: {
-        path: "$CarModels"
-      }
-    },
-    {
-      $project: {
-        _id: 0,
-        CarModel: "$CarModels"
-      }
-    },
-    {
-      $project: {
-        CarModel: 1
-      }
-    },
-    {
-      $replaceRoot: {
-        newRoot: {
-          $mergeObjects: ["$CarModel", "$$ROOT"]
+    let aggregation = [
+      {
+        $match: {
+          "_id": new mongodb.ObjectId(brandId)
+        }
+      },
+      {
+        $unwind: {
+          path: "$CarModels"
+        }
+      },
+      {
+        $project: {
+          _id: 0,
+          CarModel: "$CarModels"
+        }
+      },
+      {
+        $project: {
+          CarModel: 1
+        }
+      },
+      {
+        $replaceRoot: {
+          newRoot: {
+            $mergeObjects: ["$CarModel", "$$ROOT"]
+          }
+        }
+      },
+      {
+        $project: {
+          "CarModelTitle": 1
+        }
+      },
+      {
+        $match: {
+          "CarModelTitle": { $regex: model, $options: "i" }
         }
       }
-    },
-    {
-      $project: {
-        "CarModelTitle": 1
-      }
-    },
-    {
-      $match: {
-        "CarModelTitle": { $regex: model }
-      }
-    }];
+    ];
 
 
 
