@@ -298,21 +298,13 @@ router.post("/getTrimsByModel", queryBuilder, async (req, res) => {
 
 
 
-// ############################################
-// ############################################
-// ############################################
-router.get("getDeliveryStatus", async (req, res) => {
-
-  return response_handler.okResponse(res, "Car Status and usages and delivery", { states: delivery_status })
-
-})
 
 
 
 // ############################################
 // ############################################
 // ############################################
-router.get("getDeliveryStatus", async (req, res) => {
+router.get("/getDeliveryStatus", async (req, res) => {
 
   return response_handler.okResponse(res, "Car Status and usages and delivery", { states: delivery_status })
 
@@ -322,7 +314,7 @@ router.get("getDeliveryStatus", async (req, res) => {
 // ############################################
 // ############################################
 // ############################################
-router.get("getBodyStatus", async (req, res) => {
+router.get("/getBodyStatus", async (req, res) => {
 
 
   return response_handler.okResponse(res, "Car Body Status", { states: body_status })
@@ -333,7 +325,7 @@ router.get("getBodyStatus", async (req, res) => {
 // ############################################
 // ############################################
 // ############################################
-router.get("getColors", async (req, res) => {
+router.get("/getColors", async (req, res) => {
 
   return response_handler.okResponse(res, "Car Colors", { interior_color: colors_interior, color: colors })
 
