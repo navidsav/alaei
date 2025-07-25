@@ -48,7 +48,7 @@ router.get("/getbrands", queryBuilder, async (req, res) => {
 
   try {
 
-    const { brand, minYear, maxPrice } = req.query;
+    let { brand, minYear, maxPrice } = req.query;
 
     brand = brand == undefined || brand == null ? "" : brand;
     let aggregation = [{
@@ -94,7 +94,7 @@ router.post("/getModelsByBrand", queryBuilder, async (req, res) => {
 
   try {
 
-    const { model, minYear, maxPrice } = req.query;
+    let { model, minYear, maxPrice } = req.query;
     model = model == undefined || model == null ? "" : model;
 
     const { brandId } = req.body;
@@ -192,7 +192,7 @@ router.post("/getTrimsByModel", queryBuilder, async (req, res) => {
 
   try {
 
-    const { trim, minYear, maxPrice } = req.query;
+    let { trim, minYear, maxPrice } = req.query;
     trim = trim == undefined || trim == null ? "" : trim;
 
     const { modelId } = req.body;
