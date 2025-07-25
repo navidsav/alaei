@@ -50,24 +50,21 @@ router.get("/getbrands", queryBuilder, async (req, res) => {
 
     const { brand, minYear, maxPrice } = req.query;
 
-    let aggregation = [];
+    brand = brand == undefined || brand == null ? "" : brand;
+    let aggregation = [{
+      $match: {
+        "BrandTitle": { $regex: brand }
+      },
+    },
+    {
+      $project: {
+        _id: 1,
+        BrandTitle: 1,
+        BrandLogoUrl: 1
+      }
+    }];
 
-    if (brand) {
-      aggregation.push(
-        {
-          $match: {
-            "BrandTitle": { $regex: brand }
-          },
-        },
-        {
-          $project: {
-            _id: 1,
-            BrandTitle: 1,
-            BrandLogoUrl: 1
-          }
-        }
-      );
-    }
+
     if (req.mongoQuery.skip) {
       aggregation.push({
         $skip: req.mongoQuery.skip
@@ -98,52 +95,50 @@ router.post("/getModelsByBrand", queryBuilder, async (req, res) => {
   try {
 
     const { model, minYear, maxPrice } = req.query;
+    model = model == undefined || model == null ? "" : model;
+
     const { brandId } = req.body;
 
-    let aggregation = [];
-
-    if (model) {
-      aggregation.push(
-        {
-          $match: {
-            "_id": new mongodb.ObjectId(brandId)
-          }
-        },
-        {
-          $unwind: {
-            path: "$CarModels"
-          }
-        },
-        {
-          $project: {
-            _id: 0,
-            CarModel: "$CarModels"
-          }
-        },
-        {
-          $project: {
-            CarModel: 1
-          }
-        },
-        {
-          $replaceRoot: {
-            newRoot: {
-              $mergeObjects: ["$CarModel", "$$ROOT"]
-            }
-          }
-        },
-        {
-          $project: {
-            "CarModelTitle": 1
-          }
-        },
-        {
-          $match: {
-            "CarModelTitle": { $regex: model }
-          }
+    let aggregation = [{
+      $match: {
+        "_id": new mongodb.ObjectId(brandId)
+      }
+    },
+    {
+      $unwind: {
+        path: "$CarModels"
+      }
+    },
+    {
+      $project: {
+        _id: 0,
+        CarModel: "$CarModels"
+      }
+    },
+    {
+      $project: {
+        CarModel: 1
+      }
+    },
+    {
+      $replaceRoot: {
+        newRoot: {
+          $mergeObjects: ["$CarModel", "$$ROOT"]
         }
-      );
-    }
+      }
+    },
+    {
+      $project: {
+        "CarModelTitle": 1
+      }
+    },
+    {
+      $match: {
+        "CarModelTitle": { $regex: model }
+      }
+    }];
+
+
 
     if (req.mongoQuery.skip) {
       aggregation.push({
@@ -196,85 +191,82 @@ router.post("/getTrimsByModel", queryBuilder, async (req, res) => {
   try {
 
     const { trim, minYear, maxPrice } = req.query;
+    trim = trim == undefined || trim == null ? "" : trim;
+
     const { modelId } = req.body;
 
-    let aggregation = [];
-
-    if (trim) {
-      aggregation.push(
-        {
-          $unwind: {
-            path: "$CarModels"
-          }
-        },
-        {
-          $project: {
-            _id: 0,
-            CarModel: "$CarModels"
-          }
-        },
-        {
-          $project: {
-            CarModel: 1
-          }
-        },
-        {
-          $replaceRoot: {
-            newRoot: {
-              $mergeObjects: ["$CarModel", "$$ROOT"]
-            }
-          }
-        },
-        {
-          $project: {
-            "CarModel.CarModelDetails": 1
-          }
-        },
-        {
-          $match: {
-            _id: new mongodb.ObjectId(modelId)
-          }
-        },
-        {
-          $replaceRoot: {
-            newRoot: {
-              $mergeObjects: ["$CarModel", "$$ROOT"]
-            }
-          }
-        },
-        {
-          $unwind: {
-            path: "$CarModelDetails"
-          }
-        },
-        {
-          $project: {
-            _id: 0,
-            CarModelDetail: "$CarModelDetails"
-          }
-        },
-        {
-          $replaceRoot: {
-            newRoot: {
-              $mergeObjects: [
-                "$CarModelDetail",
-                "$$ROOT"
-              ]
-            }
-          }
-        },
-        {
-          $project: {
-            CarModelDetailTitle: 1
-          }
-        },
-        {
-          $match: {
-            "CarModelDetailTitle": { $regex: trim }
-          }
+    let aggregation = [{
+      $unwind: {
+        path: "$CarModels"
+      }
+    },
+    {
+      $project: {
+        _id: 0,
+        CarModel: "$CarModels"
+      }
+    },
+    {
+      $project: {
+        CarModel: 1
+      }
+    },
+    {
+      $replaceRoot: {
+        newRoot: {
+          $mergeObjects: ["$CarModel", "$$ROOT"]
         }
-      );
-    }
+      }
+    },
+    {
+      $project: {
+        "CarModel.CarModelDetails": 1
+      }
+    },
+    {
+      $match: {
+        _id: new mongodb.ObjectId(modelId)
+      }
+    },
+    {
+      $replaceRoot: {
+        newRoot: {
+          $mergeObjects: ["$CarModel", "$$ROOT"]
+        }
+      }
+    },
+    {
+      $unwind: {
+        path: "$CarModelDetails"
+      }
+    },
+    {
+      $project: {
+        _id: 0,
+        CarModelDetail: "$CarModelDetails"
+      }
+    },
+    {
+      $replaceRoot: {
+        newRoot: {
+          $mergeObjects: [
+            "$CarModelDetail",
+            "$$ROOT"
+          ]
+        }
+      }
+    },
+    {
+      $project: {
+        CarModelDetailTitle: 1
+      }
+    },
+    {
+      $match: {
+        "CarModelDetailTitle": { $regex: trim, $options: "i" }
+      }
+    }];
+
 
     if (req.mongoQuery.skip) {
       aggregation.push({
