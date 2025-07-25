@@ -144,7 +144,11 @@ router.post("/register", async (req, res) => {
       user.salt = salt
       user.status = 'complete'
       user.save()
-      return responseHandler.okResponse(res, "User saved successfully")
+
+      const token = jwt.sign({ id: user._id }, config.JWT_SECRET, { expiresIn: "365d" });
+
+
+      return responseHandler.okResponse(res, "User saved successfully", { token: token })
 
 
 
