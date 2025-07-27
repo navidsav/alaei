@@ -11,7 +11,7 @@ module.exports = {
         "title": "حواله ای",
         "value": 2
     }],
-    havale_type: [[{
+    havale_type: [{
         "title": "تحویل روز",
         "value": -1,
     },
@@ -30,5 +30,5 @@ module.exports = {
     {
         "title": "تحویل ۹ تا ۱۲ ماه",
         "value": -12,
-    }]]
+    }]
 }
