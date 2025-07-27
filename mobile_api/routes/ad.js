@@ -46,7 +46,7 @@ const fileFilter = (req, file, cb) => {
 };
 
 const upload = multer({ storage, fileFilter });
-router.get("/add", authMiddleware, upload.array('images', 10), async (req, res) => {
+router.post("/add", authMiddleware, upload.array('images', 10), async (req, res) => {
 
   try {
 
@@ -94,7 +94,7 @@ const installment_number = require("../../common/car/installment_number");
 const installment_month = require("../../common/car/installment_month");
 const installment_delivery = require("../../common/car/installment_delivery");
 const payment_type = require("../../common/car/payment_type");
-router.get("/verify", authMiddleware, upload.array('images', 10), async (req, res) => {
+router.post("/verify", authMiddleware, upload.array('images', 10), async (req, res) => {
 
 
 
@@ -161,7 +161,7 @@ router.get("/verify", authMiddleware, upload.array('images', 10), async (req, re
       installment_number: installment_number.find(o => o.value == installment_number_value),
       installment_month: installment_month.find(o => o.value == installment_month_value),
       installment_delivery: installment_delivery.find(o => o.value == installment_delivery_days_value),
-      
+
 
 
      })
