@@ -143,7 +143,8 @@ router.post("/verify", authMiddleware, async (req, res) => {
 
     // Respond with the car details
     return response_handler.okResponse(res, "here you are", {
-      trim: trim,
+      // trim: trim,
+      bb: req.body,
       production_year: production_year,
       delivery_status_type: delivery_status.delivery_type.find(o => o.value == delivery_status_type),
       delivery_havele_type: delivery_status.havale_type.find(o => o.value == delivery_status_value),
