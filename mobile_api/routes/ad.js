@@ -10,15 +10,37 @@ const delivery_status = require("../../common/car/delivery_status");
 const body_status = require("../../common/car/body_status");
 const colors = require("../../common/car/colors");
 const colors_interior = require("../../common/car/colors_interior");
+const queryBuilder = require("../../common/query")
 
 const router = express.Router();
 
 let db = {};
 
 
+
+// ############################################
+// ############################################
+// ############################################
 router.get("/add", async (req, res) => {
 
   try {
+
+    let {
+      brand_id,
+      model_id,
+      trim_id,
+      production_year,
+      
+
+      body_color_id,
+      interior_color_id,
+      body_status_id,
+      delivery_days_id,
+      device_status_id,
+      installment_numbers,
+      month_numbers
+    } = req.body;
+
     // Find the authenticated user
     const colors = await ColorModel.find({}, 'colorName _id')
 
@@ -30,18 +52,6 @@ router.get("/add", async (req, res) => {
   }
 });
 
-
-
-function queryBuilder(req, res, next) {
-  const query = {};
-  const { pageNum, perpage } = req.query;
-
-  if (pageNum && perpage) query.limit = parseInt(pageNum * perpage);
-  if (pageNum && perpage) query.skip = parseInt((pageNum - 1) * perpage);
-
-  req.mongoQuery = query;
-  next();
-}
 
 
 
@@ -99,6 +109,11 @@ router.get("/getAds", queryBuilder, async (req, res) => {
   }
 });
 
+
+
+// ############################################
+// ############################################
+// ############################################
 mongo(config.DB_URI, config.MOBILE_DB_NAME)
   .then(async (DB) => {
     db = DB;

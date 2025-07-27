@@ -102,14 +102,14 @@ router.get("/getbrands", queryBuilder, async (req, res) => {
 // ############################################
 // ############################################
 // ############################################
-router.post("/getModelsByBrand", queryBuilder, async (req, res) => {
+router.get("/getModelsByBrand/:brand", queryBuilder, async (req, res) => {
 
   try {
 
     let { model, minYear, maxPrice } = req.query;
     model = model == undefined || model == null ? "" : model;
 
-    const { brandId } = req.body;
+    const brandId = req.params.brand;
 
     let aggregation = [
       {
@@ -220,14 +220,14 @@ router.get("/getProductionYears", queryBuilder, async (req, res) => {
 // ############################################
 // ############################################
 // ############################################
-router.post("/getTrimsByModel", queryBuilder, async (req, res) => {
+router.get("/getTrimsByModel/:model", queryBuilder, async (req, res) => {
 
   try {
 
     let { trim, minYear, maxPrice } = req.query;
     trim = trim == undefined || trim == null ? "" : trim;
 
-    const { modelId } = req.body;
+    const modelId = req.params.model;
 
     let aggregation = [{
       $unwind: {
