@@ -143,19 +143,19 @@ router.post("/verify", authMiddleware, upload.array("images", 1), async (req, re
 
     // Respond with the car details
     return response_handler.okResponse(res, "here you are", {
-      // trim: trim,
+      trim: trim,
       // bb: req.body,
       production_year: production_year,
-      // delivery_status_type: delivery_status.delivery_type.find(o => o.value == delivery_status_type),
-      // delivery_havele_type: delivery_status.havale_type.find(o => o.value == delivery_status_value),
-      // body_color: colors.find(o => o.value == body_color_value),
-      // interior_color: colors_interior.find(o => o.value == interior_color_value),
-      // body_status: body_status.find(o => o.value == body_status_value),
-      // payment_type: payment_type.find(o => o.value == payment_type_value),
-      // payment_total_price: payment_total_price,
-      // installment_number: installment_number.find(o => o.value == installment_number_value),
-      // installment_month: installment_month.find(o => o.value == installment_month_value),
-      // installment_delivery: installment_delivery.find(o => o.value == installment_delivery_days_value),
+      delivery_status_type: delivery_status.delivery_type.find(o => o.value == delivery_status_type),
+      delivery_havele_type: delivery_status.havale_type.find(o => o.value == delivery_status_value),
+      body_color: colors.find(o => o.value == body_color_value),
+      interior_color: colors_interior.find(o => o.value == interior_color_value),
+      body_status: body_status.find(o => o.value == body_status_value),
+      payment_type: payment_type.find(o => o.value == payment_type_value),
+      payment_total_price: payment_total_price,
+      installment_number: installment_number.find(o => o.value == installment_number_value),
+      installment_month: installment_month.find(o => o.value == installment_month_value),
+      installment_delivery: installment_delivery.find(o => o.value == installment_delivery_days_value),
 
 
 
