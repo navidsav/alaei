@@ -64,7 +64,7 @@ router.get("/getbrands", queryBuilder, async (req, res) => {
       $project: {
         _id: 1,
         BrandTitle: 1,
-        BrandLogoUrl: 1
+        BrandLogoUrl: "https://images.seeklogo.com/logo-png/16/1/porsche-logo-png_seeklogo-168544.png"
       }
     }];
 

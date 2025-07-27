@@ -12,7 +12,7 @@ module.exports = function (req, res, next) {
 
   const token = req.cookies.token || req.headers.authorization?.split(' ')[1];
 
-  if (!token) return response_handler.forbiddenResponse(res, "No token, authorization denied", {});
+  if (!token) return response_handler.nokResponse(res, "No token, authorization denied", {});
 
   try {
     const decoded = jwt.verify(token.replace("Bearer ", ""), config.JWT_SECRET);
@@ -56,7 +56,7 @@ module.exports = function (req, res, next) {
               }, car: car
             })
 
-            return response_handler.forbiddenResponse(res, "No car, authorization denied", {
+            return response_handler.nokResponse(res, "No car, authorization denied", {
               "user_id": req.user.id,
               "reg.body": req.body,
               "carIdPropName": carIdPropName
@@ -67,7 +67,7 @@ module.exports = function (req, res, next) {
           }
         }).catch(err => {
           logger.error({ event: " AUTHORIZATION auth.js", error: err?.message })
-          return response_handler.forbiddenResponse(res, "Invalid token", {})
+          return response_handler.nokResponse(res, "Invalid token", {})
 
         });
       }
