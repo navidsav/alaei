@@ -9,7 +9,6 @@ const authMiddleware = require("../middleware/auth")
 
 
 const config = require("../../config.json");
-const delivery_status = require("../../common/car/delivery_status");
 const body_status = require("../../common/car/body_status");
 const colors = require("../../common/car/colors");
 const colors_interior = require("../../common/car/colors_interior");
@@ -94,7 +93,7 @@ const installment_number = require("../../common/car/installment_number");
 const installment_month = require("../../common/car/installment_month");
 const installment_delivery = require("../../common/car/installment_delivery");
 const payment_type = require("../../common/car/payment_type");
-router.post("/verify", authMiddleware, upload.array('images', 10), async (req, res) => {
+router.post("/verify", authMiddleware, async (req, res) => {
 
 
 
