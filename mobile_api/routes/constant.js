@@ -89,10 +89,10 @@ router.get("/getbrands", queryBuilder, async (req, res) => {
       });
     }
 
-    const cars = await db.aggregate("carbrands", aggregation);
+    const brands = await db.aggregate("carbrands", aggregation);
 
     // Respond with the car details
-    return response_handler.okResponse(res, "here you are", { brands: cars, total: total[0].total })
+    return response_handler.okResponse(res, "here you are", { brands: brands, total: total[0].total })
   } catch (error) {
     logger.error({ event: "HTTP GET BRANDS ERROR ", error: error?.message })
     response_handler.errorResponse(res, "Server error", error)
@@ -155,6 +155,16 @@ router.post("/getModelsByBrand", queryBuilder, async (req, res) => {
 
 
 
+
+    let total = -1;
+
+    let totalAgg = [...aggregation, {
+      $count: "total"
+    }]
+
+    total = await db.aggregate("carbrands", totalAgg);
+
+
     if (req.mongoQuery.skip) {
       aggregation.push({
         $skip: req.mongoQuery.skip
@@ -166,10 +176,10 @@ router.post("/getModelsByBrand", queryBuilder, async (req, res) => {
       });
     }
 
-    const cars = await db.aggregate("carbrands", aggregation);
+    const models = await db.aggregate("carbrands", aggregation);
 
     // Respond with the car details
-    return response_handler.okResponse(res, "here you are", cars)
+    return response_handler.okResponse(res, "here you are", { models: models, total: total[0].total })
   } catch (error) {
     logger.error({ event: "HTTP GET BRANDS ERROR ", error: error?.message })
     response_handler.errorResponse(res, "Server error", error)
@@ -283,6 +293,17 @@ router.post("/getTrimsByModel", queryBuilder, async (req, res) => {
     }];
 
 
+
+
+    let total = -1;
+
+    let totalAgg = [...aggregation, {
+      $count: "total"
+    }]
+
+    total = await db.aggregate("carbrands", totalAgg);
+
+
     if (req.mongoQuery.skip) {
       aggregation.push({
         $skip: req.mongoQuery.skip
@@ -294,10 +315,10 @@ router.post("/getTrimsByModel", queryBuilder, async (req, res) => {
       });
     }
 
-    const cars = await db.aggregate("carbrands", aggregation);
+    const trims = await db.aggregate("carbrands", aggregation);
 
     // Respond with the car details
-    return response_handler.okResponse(res, "here you are", cars)
+    return response_handler.okResponse(res, "here you are", { trims: trims, total: total[0].total })
   } catch (error) {
     logger.error({ event: "HTTP GET BRANDS ERROR ", error: error?.message })
     response_handler.errorResponse(res, "Server error", error)
