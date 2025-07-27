@@ -113,54 +113,52 @@ router.post("/verify", authMiddleware, async (req, res) => {
     } = req.body;
 
     let trim = await db.aggregate("carbrands", [
-      [
-        {
-          $unwind: {
-            path: "$CarModels"
-          }
-        },
-
-        {
-          $unwind: {
-            path: "$CarModels.CarModelDetails"
-          }
-        },
-        {
-          $match: {
-            "CarModels.CarModelDetails._id": new mongodb.ObjectId(trim_id)
-          }
-        },
-        {
-          $project: {
-            _id: 0,
-            BrandTitle: 1,
-            CarModelTitle: "$CarModels.CarModelTitle",
-            CarModelDetail: "$CarModels.CarModelDetails.CarModelDetailTitle"
-          }
+      {
+        $unwind: {
+          path: "$CarModels"
         }
-      ]
+      },
+
+      {
+        $unwind: {
+          path: "$CarModels.CarModelDetails"
+        }
+      },
+      {
+        $match: {
+          "CarModels.CarModelDetails._id": new mongodb.ObjectId(trim_id)
+        }
+      },
+      {
+        $project: {
+          _id: 0,
+          BrandTitle: 1,
+          CarModelTitle: "$CarModels.CarModelTitle",
+          CarModelDetail: "$CarModels.CarModelDetails.CarModelDetailTitle"
+        }
+      }
     ])
 
 
 
     // Respond with the car details
-    return response_handler.okResponse(res, "here you are", { 
-      trim:trim,
-      production_year:production_year,
-      delivery_status_type:delivery_status.delivery_type.find(o => o.value == delivery_status_type),
-      delivery_havele_type:delivery_status.havale_type.find(o => o.value == delivery_status_value),
+    return response_handler.okResponse(res, "here you are", {
+      trim: trim,
+      production_year: production_year,
+      delivery_status_type: delivery_status.delivery_type.find(o => o.value == delivery_status_type),
+      delivery_havele_type: delivery_status.havale_type.find(o => o.value == delivery_status_value),
       body_color: colors.find(o => o.value == body_color_value),
       interior_color: colors_interior.find(o => o.value == interior_color_value),
-      body_status : body_status.find(o => o.value == body_status_value),
+      body_status: body_status.find(o => o.value == body_status_value),
       payment_type: payment_type.find(o => o.value == payment_type_value),
-      payment_total_price:payment_total_price,
+      payment_total_price: payment_total_price,
       installment_number: installment_number.find(o => o.value == installment_number_value),
       installment_month: installment_month.find(o => o.value == installment_month_value),
       installment_delivery: installment_delivery.find(o => o.value == installment_delivery_days_value),
 
 
 
-     })
+    })
   } catch (error) {
     logger.error({ event: "HTTP GET COLORS ERROR ", error: error?.message })
     response_handler.errorResponse(res, "Server error", error)
