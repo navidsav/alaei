@@ -4,6 +4,9 @@ const response_handler = require("./response_handler");
 const logger = require("../../common/logger");
 const mongo = require('@intugine-technologies/mongodb');
 const mongodb = require("mongodb");
+const multer = require('multer');
+const authMiddleware = require("../middleware/auth")
+
 
 const config = require("../../config.json");
 const delivery_status = require("../../common/car/delivery_status");
@@ -21,31 +24,59 @@ let db = {};
 // ############################################
 // ############################################
 // ############################################
-router.get("/add", async (req, res) => {
+
+// تنظیم محل ذخیره فایل‌ها و فرمت نام فایل
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    cb(null, '/var/www/cdn/alaei/uploads'); // پوشه مقصد (باید وجود داشته باشد یا ساخته شود)
+  },
+  filename: (req, file, cb) => {
+    const ext = path.extname(file.originalname);
+    cb(null, Date.now() + '-' + file.fieldname + ext); // نام فایل مثل: 1699999999999-image.jpg
+  },
+});
+
+// فیلتر فقط تصاویر
+const fileFilter = (req, file, cb) => {
+  if (file.mimetype.startsWith('image/')) {
+    cb(null, true);
+  } else {
+    cb(new Error('فقط فایل‌های تصویری مجاز هستند!'), false);
+  }
+};
+
+const upload = multer({ storage, fileFilter });
+router.get("/add", authMiddleware, upload.array('images', 10), async (req, res) => {
 
   try {
 
     let {
-      brand_id,
-      model_id,
       trim_id,
       production_year,
-      
+      delivery_status_type,
+      delivery_status_value,
+      body_color_value,
+      interior_color_value,
+      body_status_value,
+      payment_type,
+      payment_total_price,
+      installment_number_value,
+      installment_delivery_days_value,
+      installment_month_value,
 
-      body_color_id,
-      interior_color_id,
-      body_status_id,
-      delivery_days_id,
-      device_status_id,
-      installment_numbers,
-      month_numbers
     } = req.body;
 
-    // Find the authenticated user
-    const colors = await ColorModel.find({}, 'colorName _id')
+
+    if (!req.files || req.files.length === 0) {
+      return res.status(400).json({ error: 'هیچ تصویری ارسال نشده است' });
+    }
+
+    const imageUrls = req.files.map(file => `/cdn/alaei/uploads/${file.filename}`);
+
+
 
     // Respond with the car details
-    return response_handler.okResponse(res, "here you are", colors)
+    return response_handler.okResponse(res, "here you are", { bb: req.body, imageUrls: imageUrls })
   } catch (error) {
     logger.error({ event: "HTTP GET COLORS ERROR ", error: error?.message })
     response_handler.errorResponse(res, "Server error", error)

@@ -10,6 +10,10 @@ const delivery_status = require("../../common/car/delivery_status");
 const body_status = require("../../common/car/body_status");
 const colors = require("../../common/car/colors");
 const colors_interior = require("../../common/car/colors_interior");
+const installment_number = require("../../common/car/installment_number");
+const installment_month = require("../../common/car/installment_month");
+const installment_delivery = require("../../common/car/installment_delivery");
+const payment_type = require("../../common/car/payment_type");
 
 const router = express.Router();
 
@@ -379,6 +383,26 @@ router.get("/getColors", async (req, res) => {
   return response_handler.okResponse(res, "Car Colors", { interior_color: colors_interior, color: colors })
 
 })
+
+
+
+
+// ############################################
+// ############################################
+// ############################################
+router.get("/getPayMethods", async (req, res) => {
+
+  return response_handler.okResponse(res, "Car Payment", {
+    payment_type: payment_type, installments: {
+      installment_delivery: installment_delivery,
+      installment_month: installment_month,
+      installment_number: installment_number
+    }
+  })
+
+})
+
+
 
 mongo(config.DB_URI, config.MOBILE_DB_NAME)
   .then(async (DB) => {
