@@ -69,13 +69,15 @@ router.get("/getbrands", queryBuilder, async (req, res) => {
     }];
 
     let total = -1;
+
+    let totalAgg = [...aggregation, {
+      $count: "total"
+    }]
+
+    total = await db.aggregate("carbrands", totalAgg);
+
+
     if (req.mongoQuery.skip) {
-
-      let totalAgg = [...aggregation, {
-        $count: "total"
-      }]
-
-      total = await db.aggregate("carbrands", totalAgg);
 
       aggregation.push({
         $skip: req.mongoQuery.skip
