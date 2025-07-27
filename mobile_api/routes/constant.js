@@ -359,7 +359,7 @@ router.get("/getTrimsByModel/:model", queryBuilder, async (req, res) => {
 // ############################################
 router.get("/getDeliveryStatus", async (req, res) => {
 
-  return response_handler.okResponse(res, "Car Status and usages and delivery", { dedelivery_status: delivery_status })
+  return response_handler.okResponse(res, "Car Status and usages and delivery", delivery_status)
 
 })
 
