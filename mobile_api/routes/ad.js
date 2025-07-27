@@ -143,7 +143,7 @@ router.post("/verify", authMiddleware, upload.array("images", 1), async (req, re
 
     // Respond with the car details
     return response_handler.okResponse(res, "here you are", {
-      trim: trim,
+      trim: trim[0],
       // bb: req.body,
       production_year: production_year,
       delivery_status_type: delivery_status.delivery_type.find(o => o.value == delivery_status_type),
