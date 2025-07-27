@@ -68,7 +68,7 @@ router.get("/getbrands", queryBuilder, async (req, res) => {
       }
     }];
 
-    let total = 0;
+    let total = -1;
     if (req.mongoQuery.skip) {
 
       let totalAgg = [...aggregation, {
