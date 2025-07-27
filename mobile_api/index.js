@@ -3,6 +3,7 @@ const config = require('../config.json');
 const mongoose = require("mongoose");
 const authRoutes = require("./routes/auth");
 const carRoutes = require("./routes/cars");
+const adRoutes = require("./routes/ad");
 const constantRoutes = require("./routes/constant");
 const bodyParser = require("body-parser");
 const authMiddleware = require("./middleware/auth");
@@ -48,6 +49,7 @@ app.use("/v2/brand", authMiddleware, carRoutes);
 app.use("/v2/carModel", authMiddleware, carRoutes);
 app.use("/v2/carModelDetail", authMiddleware, carRoutes)
 app.use("/v2/constant", authMiddleware, constantRoutes)
+app.use("/v2/ads", authMiddleware, adRoutes)
 
 
 

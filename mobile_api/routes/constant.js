@@ -32,19 +32,9 @@ router.get("/color", async (req, res) => {
 
 
 
-function queryBuilder(req, res, next) {
-  const query = {};
-  const { pageNum, perpage } = req.query;
-
-  if (pageNum && perpage) query.limit = parseInt(pageNum * perpage);
-  if (pageNum && perpage) query.skip = parseInt((pageNum - 1) * perpage);
-
-  req.mongoQuery = query;
-  next();
-}
 
 
-
+const queryBuilder = require("../../common/query")
 // ############################################
 // ############################################
 // ############################################
@@ -89,10 +79,19 @@ router.get("/getbrands", queryBuilder, async (req, res) => {
       });
     }
 
+    let datalen = -1;
+
+    let datalenAgg = [...aggregation, {
+      $count: "data_len"
+    }]
+
+    datalen = await db.aggregate("carbrands", datalenAgg);
+
+
     const brands = await db.aggregate("carbrands", aggregation);
 
     // Respond with the car details
-    return response_handler.okResponse(res, "here you are", { brands: brands, total: total[0].total })
+    return response_handler.okResponse(res, "here you are", { brands: brands, total: total[0].total, data_len: datalen[0].data_len })
   } catch (error) {
     logger.error({ event: "HTTP GET BRANDS ERROR ", error: error?.message })
     response_handler.errorResponse(res, "Server error", error)
@@ -176,10 +175,20 @@ router.post("/getModelsByBrand", queryBuilder, async (req, res) => {
       });
     }
 
+
+    let datalen = -1;
+
+    let datalenAgg = [...aggregation, {
+      $count: "data_len"
+    }]
+
+    datalen = await db.aggregate("carbrands", datalenAgg);
+
+
     const models = await db.aggregate("carbrands", aggregation);
 
     // Respond with the car details
-    return response_handler.okResponse(res, "here you are", { models: models, total: total[0].total })
+    return response_handler.okResponse(res, "here you are", { models: models, total: total[0].total, data_len: datalen[0].data_len })
   } catch (error) {
     logger.error({ event: "HTTP GET BRANDS ERROR ", error: error?.message })
     response_handler.errorResponse(res, "Server error", error)
@@ -315,10 +324,20 @@ router.post("/getTrimsByModel", queryBuilder, async (req, res) => {
       });
     }
 
+
+    let datalen = -1;
+
+    let datalenAgg = [...aggregation, {
+      $count: "data_len"
+    }]
+
+    datalen = await db.aggregate("carbrands", datalenAgg);
+
+
     const trims = await db.aggregate("carbrands", aggregation);
 
     // Respond with the car details
-    return response_handler.okResponse(res, "here you are", { trims: trims, total: total[0].total })
+    return response_handler.okResponse(res, "here you are", { trims: trims, total: total[0].total, data_len: datalen[0].data_len })
   } catch (error) {
     logger.error({ event: "HTTP GET BRANDS ERROR ", error: error?.message })
     response_handler.errorResponse(res, "Server error", error)
