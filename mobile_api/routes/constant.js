@@ -92,7 +92,7 @@ router.get("/getbrands", queryBuilder, async (req, res) => {
     const cars = await db.aggregate("carbrands", aggregation);
 
     // Respond with the car details
-    return response_handler.okResponse(res, "here you are", { brands: cars, total: total.total })
+    return response_handler.okResponse(res, "here you are", { brands: cars, total: total[0].total })
   } catch (error) {
     logger.error({ event: "HTTP GET BRANDS ERROR ", error: error?.message })
     response_handler.errorResponse(res, "Server error", error)
