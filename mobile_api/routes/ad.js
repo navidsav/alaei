@@ -9,9 +9,6 @@ const authMiddleware = require("../middleware/auth")
 
 
 const config = require("../../config.json");
-const body_status = require("../../common/car/body_status");
-const colors = require("../../common/car/colors");
-const colors_interior = require("../../common/car/colors_interior");
 const queryBuilder = require("../../common/query")
 
 const router = express.Router();
