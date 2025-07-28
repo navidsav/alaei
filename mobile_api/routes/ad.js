@@ -121,6 +121,7 @@ router.post("/add", authMiddleware, upload.array('images', 10), async (req, res)
     ])
 
 
+    console.log(" sss trim_id : ", trim_id)
 
     let user = await User.findById(req.user.id);
 
@@ -256,8 +257,8 @@ router.get("/getAds", queryBuilder, async (req, res) => {
     payment = (payment == undefined) ? "" : payment
     name = (name == undefined) ? "" : name
     phoneNumber = (phoneNumber == undefined) ? "" : phoneNumber
-    
-     
+
+
 
     let aggregation = [{
       $match: {
