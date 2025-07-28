@@ -251,7 +251,7 @@ router.get("/getAds", queryBuilder, async (req, res) => {
 
   try {
 
-    let { phoneNumber, name, text } = req.query;
+    let { phoneNumber, name, peyment } = req.query;
 
     let aggregation = [{
       $match: {
@@ -265,7 +265,7 @@ router.get("/getAds", queryBuilder, async (req, res) => {
     },
     {
       $match: {
-        "payment_type.text": { $regex: text }
+        "payment_type.text": { $regex: peyment }
       }
     }];
 
