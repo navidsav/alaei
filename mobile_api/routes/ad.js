@@ -144,7 +144,7 @@ router.post("/add", authMiddleware, upload.array('images', 10), async (req, res)
       },
       {
         $project: {
-          _id: 1,
+          _id: 0,
           BrandTitle: 1,
           CarModelTitle: "$CarModels.CarModelTitle",
           CarModelDetail: "$CarModels.CarModelDetails.CarModelDetailTitle"
