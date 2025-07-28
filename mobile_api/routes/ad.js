@@ -251,19 +251,21 @@ router.get("/getAds", queryBuilder, async (req, res) => {
 
   try {
 
-    let { brand, minYear, maxPrice } = req.query;
+    let { phoneNumber, name, text } = req.query;
 
-    brand = brand == undefined || brand == null ? "" : brand;
     let aggregation = [{
       $match: {
-        "BrandTitle": { $regex: brand, $options: "i" }
-      },
+        "user.phoneNumber": { $regex: phoneNumber }
+      }
     },
     {
-      $project: {
-        _id: 1,
-        BrandTitle: 1,
-        BrandLogoUrl: "https://images.seeklogo.com/logo-png/16/1/porsche-logo-png_seeklogo-168544.png"
+      $match: {
+        "user.name": { $regex: name }
+      }
+    },
+    {
+      $match: {
+        "payment_type.text": { $regex: text }
       }
     }];
 
@@ -273,7 +275,7 @@ router.get("/getAds", queryBuilder, async (req, res) => {
       $count: "total"
     }]
 
-    total = await db.aggregate("carbrands", totalAgg);
+    total = await db.aggregate("car_ads", totalAgg);
 
 
     if (req.mongoQuery.skip) {
@@ -288,10 +290,10 @@ router.get("/getAds", queryBuilder, async (req, res) => {
       });
     }
 
-    const brands = await db.aggregate("carbrands", aggregation);
+    const ads = await db.aggregate("car_ads", aggregation);
 
     // Respond with the car details
-    return response_handler.okResponse(res, "here you are", { brands: brands, total: total[0].total })
+    return response_handler.okResponse(res, "here you are", { ads: ads, total: total[0].total })
   } catch (error) {
     logger.error({ event: "HTTP GET BRANDS ERROR ", error: error?.message })
     response_handler.errorResponse(res, "Server error", error)
