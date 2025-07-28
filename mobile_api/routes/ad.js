@@ -251,7 +251,13 @@ router.get("/getAds", queryBuilder, async (req, res) => {
 
   try {
 
-    let { phoneNumber, name, peyment } = req.query;
+    let { phoneNumber, name, payment } = req.query;
+
+    payment = (payment == undefined) ? "" : payment
+    name = (name == undefined) ? "" : name
+    phoneNumber = (phoneNumber == undefined) ? "" : phoneNumber
+    
+     
 
     let aggregation = [{
       $match: {
@@ -265,7 +271,7 @@ router.get("/getAds", queryBuilder, async (req, res) => {
     },
     {
       $match: {
-        "payment_type.text": { $regex: peyment }
+        "payment_type.text": { $regex: payment }
       }
     }];
 
