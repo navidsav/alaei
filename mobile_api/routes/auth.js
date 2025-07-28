@@ -308,6 +308,9 @@ router.post("/login", async (req, res) => {
 router.get("/amIOnline", authMiddleware, async (req, res) => {
   const isOnline = await redis_client.exists(`online:${req.user.id}`);
 
+  const user = await User.findById(req.user.id);
+
+
   responseHandler.okResponse(res, "Is online", { is_online: isOnline, is_operator: (user.referralCode && user.referralCode.length > 1) })
 
 
