@@ -125,7 +125,32 @@ router.post("/add", authMiddleware, upload.array('images', 10), async (req, res)
 
     let sssss = trim[0];
 
-    console.log(" ww : ", sssss)
+    console.log(" ww : ", [
+      {
+        $unwind: {
+          path: "$CarModels"
+        }
+      },
+
+      {
+        $unwind: {
+          path: "$CarModels.CarModelDetails"
+        }
+      },
+      {
+        $match: {
+          "CarModels.CarModelDetails._id": new mongodb.ObjectId(trim_id)
+        }
+      },
+      {
+        $project: {
+          _id: 1,
+          BrandTitle: 1,
+          CarModelTitle: "$CarModels.CarModelTitle",
+          CarModelDetail: "$CarModels.CarModelDetails.CarModelDetailTitle"
+        }
+      }
+    ])
 
     let insertThis = {
       trim: sssss,
