@@ -28,7 +28,8 @@ let db = {};
 // ############################################
 // ############################################
 // ############################################
-const path = require("path")
+const path = require("path");
+const User = require("../models/User");
 // تنظیم محل ذخیره فایل‌ها و فرمت نام فایل
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
@@ -121,6 +122,8 @@ router.post("/add", authMiddleware, upload.array('images', 10), async (req, res)
 
 
 
+    let user = await User.findById(req.user.id);
+
     let insertThis = {
       trim: trim[0],
       production_year: production_year,
@@ -138,11 +141,13 @@ router.post("/add", authMiddleware, upload.array('images', 10), async (req, res)
 
       imageUrls: imageUrls,
 
+      user: user,
+
 
       createdAt: new Date(),
       updatedAt: new Date()
     };
-   
+
     const result = await car_ad.insertOne(insertThis);
     await client.close();
 
