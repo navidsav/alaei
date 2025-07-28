@@ -121,7 +121,7 @@ router.post("/add", authMiddleware, upload.array('images', 10), async (req, res)
     ])
 
 
-    console.log(" sss trim_id : ", trim_id)
+    console.log(" sss trim_id : ", trim)
 
     let user = await User.findById(req.user.id);
 
