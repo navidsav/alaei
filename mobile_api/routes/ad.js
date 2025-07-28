@@ -76,7 +76,7 @@ router.post("/add", authMiddleware, upload.array('images', 10), async (req, res)
       return res.status(400).json({ error: 'هیچ تصویری ارسال نشده است' });
     }
 
-    const imageUrls = req.files.map(file => `/var/www/cdn/alaei/uploads/${file.filename}`);
+    const imageUrls = req.files.map(file => `https://cdn.v2.magicarmobile.ir/alaei/uploads/${file.filename}`);
 
 
 
