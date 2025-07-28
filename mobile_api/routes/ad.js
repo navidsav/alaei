@@ -123,12 +123,12 @@ router.post("/add", authMiddleware, upload.array('images', 10), async (req, res)
 
 
 
-    let sssss = trim.toArray();
+    let sssss = await trim.toArray();
 
     console.log(" ww : ", sssss)
 
     let insertThis = {
-      trim: trim[0],
+      trim: sssss[0],
       production_year: production_year,
 
       delivery_status_type: delivery_status.delivery_type.find(o => o.value == delivery_status_type),
