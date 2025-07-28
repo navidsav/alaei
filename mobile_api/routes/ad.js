@@ -88,7 +88,6 @@ router.post("/add", authMiddleware, upload.array('images', 10), async (req, res)
     const car_ad = db.collection('car_ad');
 
 
-    console.log("Inserted document id:", result.insertedId);
 
 
 
