@@ -123,7 +123,9 @@ router.post("/add", authMiddleware, upload.array('images', 10), async (req, res)
 
 
 
-    trim = trim.toArray();
+    let sssss = trim.toArray();
+
+    console.log(" ww : ", sssss)
 
     let insertThis = {
       trim: trim[0],
