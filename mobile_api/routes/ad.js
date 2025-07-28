@@ -281,7 +281,7 @@ router.get("/getAds", queryBuilder, async (req, res) => {
       $count: "total"
     }]
 
-    total = await db.aggregate("car_ads", totalAgg);
+    total = await db.aggregate("car_ad", totalAgg);
 
 
     if (req.mongoQuery.skip) {
@@ -296,7 +296,7 @@ router.get("/getAds", queryBuilder, async (req, res) => {
       });
     }
 
-    const ads = await db.aggregate("car_ads", aggregation);
+    const ads = await db.aggregate("car_ad", aggregation);
 
     // Respond with the car details
     return response_handler.okResponse(res, "here you are", { ads: ads, total: total[0].total })
