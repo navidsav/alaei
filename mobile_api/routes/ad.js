@@ -81,6 +81,19 @@ router.post("/add", authMiddleware, upload.array('images', 10), async (req, res)
 
 
 
+
+
+    const client = new mongodb.MongoClient(config.DB_URI);
+    await client.connect();
+    const newwwwwwwwwwwwDb = client.db(config.MOBILE_DB_NAME);
+    const car_ad = newwwwwwwwwwwwDb.collection('car_ad');
+
+
+
+
+    let user = await User.findById(req.user.id);
+
+
     let trim = await db.aggregate("carbrands", [
       {
         $unwind: {
@@ -110,22 +123,8 @@ router.post("/add", authMiddleware, upload.array('images', 10), async (req, res)
 
 
 
-    let sssss = trim[0];
-
-
-    const client = new mongodb.MongoClient(config.DB_URI);
-    await client.connect();
-    const db = client.db(config.MOBILE_DB_NAME);
-    const car_ad = db.collection('car_ad');
-
-
-
-
-    let user = await User.findById(req.user.id);
-
-
     let insertThis = {
-      trim: sssss,
+      trim: trim[0],
       production_year: production_year,
 
       delivery_status_type: delivery_status.delivery_type.find(o => o.value == delivery_status_type),
@@ -316,6 +315,39 @@ mongo(config.DB_URI, config.MOBILE_DB_NAME)
     db = DB;
 
 
+
+    let trim = await db.aggregate("carbrands", [
+      {
+        $unwind: {
+          path: "$CarModels"
+        }
+      },
+
+      {
+        $unwind: {
+          path: "$CarModels.CarModelDetails"
+        }
+      },
+      {
+        $match: {
+          "CarModels.CarModelDetails._id": new mongodb.ObjectId('67a28b3109c36117d2309bbd')
+        }
+      },
+      {
+        $project: {
+          _id: 1,
+          BrandTitle: 1,
+          CarModelTitle: "$CarModels.CarModelTitle",
+          CarModelDetail: "$CarModels.CarModelDetails.CarModelDetailTitle"
+        }
+      }
+    ])
+
+
+
+    let sssss = trim[0];
+
+    console.log(" ww : ", sssss)
 
     // // GEt device locations
     // let locationAggregation = [
