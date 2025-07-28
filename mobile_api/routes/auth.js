@@ -126,7 +126,7 @@ router.post("/sendsms", async (req, res) => {
 router.post("/register", async (req, res) => {
   try {
 
-    const { FirstName, LastName, Password, MobileNo, NationalCode } = req.body;
+    const { FirstName, LastName, Password, MobileNo, NationalCode, ReferralCode } = req.body;
     const user = await User.findOne({ "phoneNumber": MobileNo });
     if (!(FirstName && LastName && NationalCode && Password && MobileNo)) {
       return responseHandler.nokResponse(res, "one of FirstName,LastName,NationalCode,Password,MobileNo are null", {})
@@ -141,6 +141,7 @@ router.post("/register", async (req, res) => {
       user.nationalCode = NationalCode
       user.lastName = LastName
       user.password = hashedPassword
+      user.referralCode = ReferralCode
       user.salt = salt
       user.status = 'complete'
       user.save()
@@ -294,7 +295,7 @@ router.post("/login", async (req, res) => {
 
     redis_client.set(`online:${user._id}`, token, 'EX', maxAge); // 1-hour expiry
 
-    return response_handler.okResponse(res, "Successfully logged in!", { token: token, user: { id: user._id, username: user.username.toLowerCase(), fullname: `${user.firstName} ${user.lastName}` } })
+    return response_handler.okResponse(res, "Successfully logged in!", { token: token, user: { id: user._id, username: user.username.toLowerCase(), fullname: `${user.firstName} ${user.lastName}`, is_operator: (user.referralCode && user.referralCode.length > 1) } })
     res.json({ token, user: { id: user._id, username: user.username.toLowerCase(), fullname: `${user.firstName} ${user.lastName}` }, IsSuccessful: true });
   } catch (error) {
     responseHandler.errorResponse(res, "Server error", {})
@@ -307,7 +308,7 @@ router.post("/login", async (req, res) => {
 router.get("/amIOnline", authMiddleware, async (req, res) => {
   const isOnline = await redis_client.exists(`online:${req.user.id}`);
 
-  responseHandler.okResponse(res, "Is online", { is_online: isOnline })
+  responseHandler.okResponse(res, "Is online", { is_online: isOnline, is_operator: (user.referralCode && user.referralCode.length > 1) })
 
 
 })
