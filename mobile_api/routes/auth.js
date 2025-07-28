@@ -75,16 +75,23 @@ router.post("/sendsms", async (req, res) => {
       await newuser.save();
 
       // Send the SMS using Melipayamak API
-      sms.sendByBaseNumber(generatedVerifyCode, MobileNumber, config.SMS_PANEL_REGISTER_TEXT_BODY_ID)
-        .then(() => {
-          return responseHandler.okResponse(res, "SMS sent successfully", {})
+      sms.send(MobileNumber, from, `کد تایید ثبت نام شما در اتوعلاپی : ${generatedVerifyCode}`).then(res => {
+        //RecId or Error Number 
+        return responseHandler.okResponse(res, "SMS sent successfully", {})
+      }).catch(err => {
+        return responseHandler.nokResponse(res, "Error sending SMS", {})
+        //
+      })
+      // sms.sendByBaseNumber(generatedVerifyCode, MobileNumber, config.SMS_PANEL_REGISTER_TEXT_BODY_ID)
+      //   .then(() => {
+      //     return responseHandler.okResponse(res, "SMS sent successfully", {})
 
-        })
-        .catch((error) => {
-          logger.error({ event: "Error sending SMS:", error: error?.message });
-          return responseHandler.nokResponse(res, "Error sending SMS", {})
+      //   })
+      //   .catch((error) => {
+      //     logger.error({ event: "Error sending SMS:", error: error?.message });
+      //     return responseHandler.nokResponse(res, "Error sending SMS", {})
 
-        });
+      //   });
     }
     else if (user && user.status !== 'complete') {
       // Update the user's verification code and verification date
