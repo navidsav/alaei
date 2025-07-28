@@ -79,8 +79,6 @@ router.post("/add", authMiddleware, upload.array('images', 10), async (req, res)
     const imageUrls = req.files.map(file => `/var/www/cdn/alaei/uploads/${file.filename}`);
 
 
-    const carAdCollection = db.collection("car_ad")
-
 
     let trim = await db.aggregate("carbrands", [
       {
@@ -132,7 +130,7 @@ router.post("/add", authMiddleware, upload.array('images', 10), async (req, res)
       createdAt: new Date(),
       updatedAt: new Date()
     };
-    const result = await carAdCollection.insertOne(insertThis);
+    const result = await db.insertOne("car_ad",insertThis);
 
 
     // Respond with the car details
