@@ -80,6 +80,19 @@ router.post("/add", authMiddleware, upload.array('images', 10), async (req, res)
 
 
 
+
+
+    const client = new mongodb.MongoClient(config.DB_URI);
+    await client.connect();
+    const db = client.db(config.MOBILE_DB_NAME);
+    const car_ad = db.collection('car_ad');
+
+
+    console.log("Inserted document id:", result.insertedId);
+
+
+
+
     let trim = await db.aggregate("carbrands", [
       {
         $unwind: {
@@ -130,8 +143,9 @@ router.post("/add", authMiddleware, upload.array('images', 10), async (req, res)
       createdAt: new Date(),
       updatedAt: new Date()
     };
-    const result = await db.insertOne("car_ad",insertThis);
-
+   
+    const result = await car_ad.insertOne(insertThis);
+    await client.close();
 
     // Respond with the car details
     return response_handler.okResponse(res, "Succeddfully added", { just_added: insertThis })
@@ -314,6 +328,8 @@ mongo(config.DB_URI, config.MOBILE_DB_NAME)
     logger.error({ event: 'ERROR CONNECTING TO MOBILE_DB_NAME', err: e?.message })
 
   });
+
+
 
 
 
