@@ -91,6 +91,7 @@ router.post("/add", authMiddleware, upload.array('images', 10), async (req, res)
 
 
 
+    let user = await User.findById(req.user.id);
 
 
     let trim = await db.aggregate("carbrands", [
@@ -123,7 +124,6 @@ router.post("/add", authMiddleware, upload.array('images', 10), async (req, res)
 
     console.log(" sss trim_id : ", trim)
 
-    let user = await User.findById(req.user.id);
 
     let insertThis = {
       trim: trim[0],
