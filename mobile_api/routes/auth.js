@@ -75,7 +75,7 @@ router.post("/sendsms", async (req, res) => {
       await newuser.save();
 
       // Send the SMS using Melipayamak API
-      sms.send(MobileNumber, "", `کد تایید ثبت نام شما در اتوعلاپی : ${generatedVerifyCode}`).then(res => {
+      sms.send(MobileNumber, "", `کد تایید ثبت نام شما در اتوعلاپی : ${generatedVerifyCode}`).then(resw => {
         //RecId or Error Number 
         return responseHandler.okResponse(res, "SMS sent successfully", {})
       }).catch(err => {
@@ -100,7 +100,7 @@ router.post("/sendsms", async (req, res) => {
       user.verificationCode = generatedVerifyCode;
       user.verificationDate = verificationDate;
       await user.save();
-      sms.send(MobileNumber, "", `کد تایید ثبت نام شما در اتوعلاپی : ${generatedVerifyCode}`).then(res => {
+      sms.send(MobileNumber, "", `کد تایید ثبت نام شما در اتوعلاپی : ${generatedVerifyCode}`).then(resw => {
         //RecId or Error Number 
         return responseHandler.okResponse(res, "SMS sent successfully", {})
       }).catch(err => {
