@@ -100,15 +100,22 @@ router.post("/sendsms", async (req, res) => {
       user.verificationCode = generatedVerifyCode;
       user.verificationDate = verificationDate;
       await user.save();
-      sms.sendByBaseNumber(generatedVerifyCode, MobileNumber, config.SMS_PANEL_REGISTER_TEXT_BODY_ID)
-        .then(() => {
-          return responseHandler.okResponse(res, "SMS sent successfully", {})
-        })
-        .catch((error) => {
-          logger.error({ event: "Error sending SMS:", error: error?.message });
-          return responseHandler.nokResponse(res, "Error sending SMS", {})
+      sms.send(MobileNumber, "", `کد تایید ثبت نام شما در اتوعلاپی : ${generatedVerifyCode}`).then(res => {
+        //RecId or Error Number 
+        return responseHandler.okResponse(res, "SMS sent successfully", {})
+      }).catch(err => {
+        return responseHandler.nokResponse(res, "Error sending SMS", {})
+        //
+      })
+      // sms.sendByBaseNumber(generatedVerifyCode, MobileNumber, config.SMS_PANEL_REGISTER_TEXT_BODY_ID)
+      //   .then(() => {
+      //     return responseHandler.okResponse(res, "SMS sent successfully", {})
+      //   })
+      //   .catch((error) => {
+      //     logger.error({ event: "Error sending SMS:", error: error?.message });
+      //     return responseHandler.nokResponse(res, "Error sending SMS", {})
 
-        });
+      //   });
 
     }
     else {
