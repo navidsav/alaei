@@ -141,7 +141,12 @@ router.post("/add", authMiddleware, upload.array('images', 10), async (req, res)
 
       imageUrls: imageUrls,
 
-      user: user,
+      user: {
+        username: user.username,
+        id: user.id,
+        phoneNumber: user.phoneNumber,// TODO: read this online
+        name: `${user.firstName} ${user.lastName}`
+      },
 
 
       createdAt: new Date(),
