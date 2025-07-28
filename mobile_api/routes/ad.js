@@ -123,12 +123,12 @@ router.post("/add", authMiddleware, upload.array('images', 10), async (req, res)
 
 
 
-    let sssss = await trim.toArray();
+    let sssss = trim[0];
 
     console.log(" ww : ", sssss)
 
     let insertThis = {
-      trim: sssss[0],
+      trim: sssss,
       production_year: production_year,
 
       delivery_status_type: delivery_status.delivery_type.find(o => o.value == delivery_status_type),
@@ -319,6 +319,39 @@ mongo(config.DB_URI, config.MOBILE_DB_NAME)
     db = DB;
 
 
+
+    let trim = await db.aggregate("carbrands", [
+      {
+        $unwind: {
+          path: "$CarModels"
+        }
+      },
+
+      {
+        $unwind: {
+          path: "$CarModels.CarModelDetails"
+        }
+      },
+      {
+        $match: {
+          "CarModels.CarModelDetails._id": new mongodb.ObjectId('67a28b3109c36117d2309bbd')
+        }
+      },
+      {
+        $project: {
+          _id: 1,
+          BrandTitle: 1,
+          CarModelTitle: "$CarModels.CarModelTitle",
+          CarModelDetail: "$CarModels.CarModelDetails.CarModelDetailTitle"
+        }
+      }
+    ])
+
+
+
+    let sssss = trim[0];
+
+    console.log(" ww : ", sssss)
 
     // // GEt device locations
     // let locationAggregation = [
