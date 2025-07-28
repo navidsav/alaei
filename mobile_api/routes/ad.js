@@ -63,7 +63,7 @@ router.post("/add", authMiddleware, upload.array('images', 10), async (req, res)
       body_color_value,
       interior_color_value,
       body_status_value,
-      payment_type,
+      payment_type_value,
       payment_total_price,
       installment_number_value,
       installment_delivery_days_value,
