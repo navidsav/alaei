@@ -124,7 +124,7 @@ router.post("/add", authMiddleware, upload.array('images', 10), async (req, res)
 
 
     let insertThis = {
-      trim: trim[0],
+      trim: { ...trim[0], trim_id },
       production_year: production_year,
 
       delivery_status_type: delivery_status.delivery_type.find(o => o.value == delivery_status_type),
