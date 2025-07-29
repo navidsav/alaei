@@ -81,19 +81,7 @@ router.post("/add", authMiddleware, upload.array('images', 10), async (req, res)
 
 
 
-
-
-    const client = new mongodb.MongoClient(config.DB_URI);
-    await client.connect();
-    const newwwwwwwwwwwwDb = client.db(config.MOBILE_DB_NAME);
-    const car_ad = newwwwwwwwwwwwDb.collection('car_ad');
-
-
-
-
     let user = await User.findById(req.user.id);
-
-
     let trim = await db.aggregate("carbrands", [
       {
         $unwind: {
@@ -120,8 +108,6 @@ router.post("/add", authMiddleware, upload.array('images', 10), async (req, res)
         }
       }
     ])
-
-
 
     let insertThis = {
       trim: { ...trim[0], trim_id },
@@ -152,11 +138,38 @@ router.post("/add", authMiddleware, upload.array('images', 10), async (req, res)
       updatedAt: new Date()
     };
 
-    const result = await car_ad.insertOne(insertThis);
-    await client.close();
+
+
+    db.update('users', {
+      _id: new mongodb.ObjectId(req.user.id),
+    }, {
+      // $set: {
+      //   [`registeredCars.$.checklist_milage.${checkItem}`]: value,
+      // },
+      $push: {
+        [`registeredCarAds.$`]: {
+          $each: [insertThis]
+        }
+
+      }
+    }, {
+      upsert: false
+    })
+      .then((r) => {
+        logger.debug({ message: "Car ads added successfully", reqbody: req.body });
+
+        return responseHandler.okResponse(res, "Car Ads Added successfully", {})
+
+      })
+      .catch((e) => {
+        logger.error({ event: "Error in Car Ad Adding ", reqbody: req.body, error: e?.message });
+        return responseHandler.errorResponse(res, "Error in Car Ad Adding", req.body)
+
+      });
+
 
     // Respond with the car details
-    return response_handler.okResponse(res, "Succeddfully added", { just_added: insertThis })
+    // return response_handler.okResponse(res, "Succeddfully added", { just_added: insertThis })
   } catch (error) {
     logger.error({ event: "HTTP GET COLORS ERROR ", error: error?.message })
     response_handler.errorResponse(res, "Server error", error)

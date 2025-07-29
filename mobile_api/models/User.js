@@ -13,7 +13,7 @@ const UserSchema = new mongoose.Schema({
   salt: { type: String },
   password: { type: String },
   referralCode: { type: String },
-  registeredCars: [
+  registeredCarAds: [
     {
       status: { type: String, required: true, enum: ["complete", "pending"] },
 

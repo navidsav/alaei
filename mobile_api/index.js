@@ -49,7 +49,7 @@ app.use("/v2/brand", authMiddleware, carRoutes);
 app.use("/v2/carModel", authMiddleware, carRoutes);
 app.use("/v2/carModelDetail", authMiddleware, carRoutes)
 app.use("/v2/constant", authMiddleware, constantRoutes)
-app.use("/v2/ads", authMiddleware, adRoutes)
+app.use("/v2/ads", adRoutes)
 
 
 
