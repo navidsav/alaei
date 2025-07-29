@@ -77,7 +77,7 @@ router.post("/add", authMiddleware, upload.array('images', 10), async (req, res)
       return res.status(400).json({ error: 'هیچ تصویری ارسال نشده است' });
     }
 
-    const imageUrls = req.files.map(file => `https://cdn.v2.magicarmobile.ir/alaei/uploads/${file.filename}`);
+    const imageUrls = req.files.map(file => `${config.CDN_URL}/alaei/uploads/${file.filename}`);
 
 
 
@@ -158,8 +158,8 @@ router.post("/add", authMiddleware, upload.array('images', 10), async (req, res)
       .then((r) => {
         logger.debug({ message: "Car ads added successfully", reqbody: req.body });
 
-        
-        return response_handler.okResponse(res, "Car Ads Added successfully", {added: insertThis})
+
+        return response_handler.okResponse(res, "Car Ads Added successfully", { added: insertThis })
 
       })
       .catch((e) => {
@@ -260,7 +260,7 @@ router.post("/verify", authMiddleware, upload.array("images", 1), async (req, re
 // ############################################
 // ############################################
 // ############################################
-router.get("/getAds",authMiddleware, queryBuilder, async (req, res) => {
+router.get("/getAds", authMiddleware, queryBuilder, async (req, res) => {
 
   try {
 
@@ -270,23 +270,44 @@ router.get("/getAds",authMiddleware, queryBuilder, async (req, res) => {
     name = (name == undefined) ? "" : name
     phoneNumber = (phoneNumber == undefined) ? "" : phoneNumber
 
+    // {
+    //       $match: {
+    //         "user.phoneNumber": { $regex: phoneNumber }
+    //       }
+    //     },
+    //     {
+    //       $match: {
+    //         "user.name": { $regex: name }
+    //       }
+    //     },
+    //     {
+    //       $match: {
+    //         "payment_type.text": { $regex: payment }
+    //       }
+    //     }
 
-
-    let aggregation = [{
-      $match: {
-        "user.phoneNumber": { $regex: phoneNumber }
+    let aggregation = [
+      {
+        $unwind: {
+          path: "$registeredCarAds"
+        }
+      },
+      {
+        $project: {
+          registeredCarAds: 1
+        }
+      },
+      {
+        $replaceRoot: {
+          newRoot: {
+            $mergeObjects: [
+              "$registeredCarAds",
+              "$$ROOT"
+            ]
+          }
+        }
       }
-    },
-    {
-      $match: {
-        "user.name": { $regex: name }
-      }
-    },
-    {
-      $match: {
-        "payment_type.text": { $regex: payment }
-      }
-    }];
+    ];
 
     let total = -1;
 
@@ -294,7 +315,7 @@ router.get("/getAds",authMiddleware, queryBuilder, async (req, res) => {
       $count: "total"
     }]
 
-    total = await db.aggregate("car_ad", totalAgg);
+    total = await db.aggregate("users", totalAgg);
 
 
     if (req.mongoQuery.skip) {
@@ -309,7 +330,7 @@ router.get("/getAds",authMiddleware, queryBuilder, async (req, res) => {
       });
     }
 
-    const ads = await db.aggregate("car_ad", aggregation);
+    const ads = await db.aggregate("users", aggregation);
 
     // Respond with the car details
     return response_handler.okResponse(res, "here you are", { ads: ads, total: total[0] })
