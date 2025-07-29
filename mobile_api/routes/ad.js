@@ -329,39 +329,6 @@ mongo(config.DB_URI, config.MOBILE_DB_NAME)
 
 
 
-    let trim = await db.aggregate("carbrands", [
-      {
-        $unwind: {
-          path: "$CarModels"
-        }
-      },
-
-      {
-        $unwind: {
-          path: "$CarModels.CarModelDetails"
-        }
-      },
-      {
-        $match: {
-          "CarModels.CarModelDetails._id": new mongodb.ObjectId('67a28b3109c36117d2309bbd')
-        }
-      },
-      {
-        $project: {
-          _id: 1,
-          BrandTitle: 1,
-          CarModelTitle: "$CarModels.CarModelTitle",
-          CarModelDetail: "$CarModels.CarModelDetails.CarModelDetailTitle"
-        }
-      }
-    ])
-
-
-
-    let sssss = trim[0];
-
-    console.log(" ww : ", sssss)
-
     // // GEt device locations
     // let locationAggregation = [
     //   {
