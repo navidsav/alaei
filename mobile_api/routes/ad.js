@@ -159,7 +159,7 @@ router.post("/add", authMiddleware, upload.array('images', 10), async (req, res)
         logger.debug({ message: "Car ads added successfully", reqbody: req.body });
 
         
-        return response_handler.okResponse(res, "Car Ads Added successfully", {})
+        return response_handler.okResponse(res, "Car Ads Added successfully", {added: insertThis})
 
       })
       .catch((e) => {
