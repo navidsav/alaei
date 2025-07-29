@@ -69,6 +69,7 @@ router.post("/add", authMiddleware, upload.array('images', 10), async (req, res)
       installment_number_value,
       installment_delivery_days_value,
       installment_month_value,
+      desc
 
     } = req.body;
 
@@ -199,6 +200,7 @@ router.post("/verify", authMiddleware, upload.array("images", 1), async (req, re
       installment_number_value,
       installment_delivery_days_value,
       installment_month_value,
+      desc
 
     } = req.body;
 
@@ -246,7 +248,7 @@ router.post("/verify", authMiddleware, upload.array("images", 1), async (req, re
       installment_number: installment_number.find(o => o.value == installment_number_value),
       installment_month: installment_month.find(o => o.value == installment_month_value),
       installment_delivery: installment_delivery.find(o => o.value == installment_delivery_days_value),
-
+      desc: desc
 
 
     })
