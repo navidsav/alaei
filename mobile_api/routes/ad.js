@@ -147,7 +147,7 @@ router.post("/add", authMiddleware, upload.array('images', 10), async (req, res)
       //   [`registeredCars.$.checklist_milage.${checkItem}`]: value,
       // },
       $push: {
-        [`registeredCarAds.$`]: {
+        [`registeredCarAds`]: {
           $each: [insertThis]
         }
 
@@ -259,7 +259,7 @@ router.post("/verify", authMiddleware, upload.array("images", 1), async (req, re
 // ############################################
 // ############################################
 // ############################################
-router.get("/getAds", queryBuilder, async (req, res) => {
+router.get("/getAds",authMiddleware, queryBuilder, async (req, res) => {
 
   try {
 
