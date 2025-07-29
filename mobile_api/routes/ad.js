@@ -134,7 +134,7 @@ router.post("/add", authMiddleware, upload.array('images', 10), async (req, res)
         name: `${user.firstName} ${user.lastName}`
       },
 
-
+      descrption: desc,
       createdAt: new Date(),
       updatedAt: new Date()
     };
