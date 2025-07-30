@@ -263,7 +263,7 @@ router.post("/verify", authMiddleware, upload.array("images", 1), async (req, re
 // ############################################
 // ############################################
 // ############################################
-router.get("/getadd/:carAdId", authMiddleware, queryBuilder, async (req, res) => {
+router.get("/getad/:carAdId", authMiddleware, queryBuilder, async (req, res) => {
 
   try {
 
