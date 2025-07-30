@@ -290,10 +290,11 @@ router.get("/getad/:carAdId", authMiddleware, queryBuilder, async (req, res) => 
     //       }
     //     }
 
+    let carId = new mongodb.ObjectId(req.params.carAdIdu);
     let aggregation = [
       {
         $match: {
-          "registeredCarAds._id": new mongodb.ObjectId(req.params.carAdIdu)
+          "registeredCarAds._id": carId
         }
       },
       {
