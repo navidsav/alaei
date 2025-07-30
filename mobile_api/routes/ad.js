@@ -135,6 +135,7 @@ router.post("/add", authMiddleware, upload.array('images', 10), async (req, res)
       },
 
       descrption: desc,
+      _id: new mongodb.ObjectId(),
       createdAt: new Date(),
       updatedAt: new Date()
     };
@@ -257,6 +258,100 @@ router.post("/verify", authMiddleware, upload.array("images", 1), async (req, re
     response_handler.errorResponse(res, "Server error", error)
   }
 });
+
+
+// ############################################
+// ############################################
+// ############################################
+router.get("/getadd/:carAdId", authMiddleware, queryBuilder, async (req, res) => {
+
+  try {
+
+    let { phoneNumber, name, payment } = req.query;
+
+
+    payment = (payment == undefined) ? "" : payment
+    name = (name == undefined) ? "" : name
+    phoneNumber = (phoneNumber == undefined) ? "" : phoneNumber
+
+    // {
+    //       $match: {
+    //         "user.phoneNumber": { $regex: phoneNumber }
+    //       }
+    //     },
+    //     {
+    //       $match: {
+    //         "user.name": { $regex: name }
+    //       }
+    //     },
+    //     {
+    //       $match: {
+    //         "payment_type.text": { $regex: payment }
+    //       }
+    //     }
+
+    let aggregation = [
+      {
+        $match: {
+          "registeredCarAds._id": new mongodb.ObjectId(req.params.carAdIdu)
+        }
+      },
+      {
+        $unwind: {
+          path: "$registeredCarAds"
+        }
+      },
+      {
+        $project: {
+          registeredCarAds: 1
+        }
+      },
+      {
+        $replaceRoot: {
+          newRoot: {
+            $mergeObjects: [
+              "$registeredCarAds",
+              "$$ROOT"
+            ]
+          }
+        }
+      },
+      {
+
+      }
+    ];
+
+    let total = -1;
+
+    let totalAgg = [...aggregation, {
+      $count: "total"
+    }]
+
+    total = await db.aggregate("users", totalAgg);
+
+
+    if (req.mongoQuery.skip) {
+
+      aggregation.push({
+        $skip: req.mongoQuery.skip
+      });
+    }
+    if (req.mongoQuery.limit) {
+      aggregation.push({
+        $limit: req.mongoQuery.limit
+      });
+    }
+
+    const ads = await db.aggregate("users", aggregation);
+
+    // Respond with the car details
+    return response_handler.okResponse(res, "here you are", { ads: ads, total: total[0] })
+  } catch (error) {
+    logger.error({ event: "HTTP GET BRANDS ERROR ", error: error?.message })
+    response_handler.errorResponse(res, "Server error", error)
+  }
+});
+
 
 
 // ############################################
