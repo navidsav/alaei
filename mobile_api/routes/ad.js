@@ -316,9 +316,6 @@ router.get("/getad/:carAdId", authMiddleware, queryBuilder, async (req, res) => 
             ]
           }
         }
-      },
-      {
-
       }
     ];
 
