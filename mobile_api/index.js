@@ -19,7 +19,7 @@ app.use(cookieParser());
 
 const allowedOrigins = [
   'https://auto-gallery-hazel.vercel.app',
-  'https://api.autoalaei.ir'
+  'https://panel.autoalaei.ir'
 ];
 
 app.use(cors({
