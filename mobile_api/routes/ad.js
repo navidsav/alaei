@@ -292,7 +292,11 @@ router.get("/getad/:carAdId", authMiddleware, queryBuilder, async (req, res) => 
 
     let carId = new mongodb.ObjectId(req.params.carAdId);
     let aggregation = [
-
+      {
+        $match: {
+          "_id": new mongodb.ObjectId(req.user.id)
+        }
+      },
       {
         $unwind: {
           path: "$registeredCarAds"
@@ -305,6 +309,7 @@ router.get("/getad/:carAdId", authMiddleware, queryBuilder, async (req, res) => 
       },
       {
         $project: {
+          _id: 0,
           registeredCarAds: 1
         }
       },
@@ -317,7 +322,13 @@ router.get("/getad/:carAdId", authMiddleware, queryBuilder, async (req, res) => 
             ]
           }
         }
-      }
+      },
+      {
+        $project: {
+          registeredCarAds: 0
+        }
+      },
+
     ];
 
     let total = -1;
@@ -384,12 +395,18 @@ router.get("/getAds", authMiddleware, queryBuilder, async (req, res) => {
 
     let aggregation = [
       {
+        $match: {
+          "_id": new mongodb.ObjectId(req.user.id)
+        }
+      },
+      {
         $unwind: {
           path: "$registeredCarAds"
         }
       },
       {
         $project: {
+          _id: 0,
           registeredCarAds: 1
         }
       },
@@ -401,6 +418,11 @@ router.get("/getAds", authMiddleware, queryBuilder, async (req, res) => {
               "$$ROOT"
             ]
           }
+        }
+      },
+      {
+        $project: {
+          registeredCarAds: 0
         }
       }
     ];
