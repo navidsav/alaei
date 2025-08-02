@@ -14,6 +14,8 @@ const installment_number = require("../../common/car/installment_number");
 const installment_month = require("../../common/car/installment_month");
 const installment_delivery = require("../../common/car/installment_delivery");
 const payment_type = require("../../common/car/payment_type");
+const authMiddleware = require("../middleware/auth");
+
 
 const router = express.Router();
 
@@ -38,7 +40,8 @@ router.get("/color", async (req, res) => {
 
 
 
-const queryBuilder = require("../../common/query")
+const queryBuilder = require("../../common/query");
+const ad_status = require("../../common/car/ad_status");
 // ############################################
 // ############################################
 // ############################################
@@ -402,6 +405,15 @@ router.get("/getPayMethods", async (req, res) => {
 
 })
 
+// ############################################
+// ############################################
+// ############################################
+router.get("/getStatuses",  authMiddleware , async (req, res) => {
+
+  return ad_status;
+
+})
+
 
 
 mongo(config.DB_URI, config.MOBILE_DB_NAME)
@@ -439,6 +451,11 @@ mongo(config.DB_URI, config.MOBILE_DB_NAME)
 
   });
 
+
+
+// ############################################
+// ############################################
+// ############################################
 
 
 

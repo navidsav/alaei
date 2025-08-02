@@ -30,6 +30,7 @@ let db = {};
 // ############################################
 const path = require("path");
 const User = require("../models/User");
+const ad_status = require("../../common/car/ad_status");
 // تنظیم محل ذخیره فایل‌ها و فرمت نام فایل
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
@@ -133,7 +134,7 @@ router.post("/add", authMiddleware, upload.array('images', 10), async (req, res)
         phoneNumber: user.phoneNumber,// TODO: read this online
         name: `${user.firstName} ${user.lastName}`
       },
-
+      status: ad_status.find(o => o.value == 0),
       descrption: desc,
       _id: new mongodb.ObjectId(),
       createdAt: new Date(),
@@ -292,11 +293,11 @@ router.get("/getad/:carAdId", authMiddleware, queryBuilder, async (req, res) => 
 
     let carId = new mongodb.ObjectId(req.params.carAdId);
     let aggregation = [
-      {
-        $match: {
-          "_id": new mongodb.ObjectId(req.user.id)
-        }
-      },
+      // {
+      //   $match: {
+      //     "_id": new mongodb.ObjectId(req.user.id)
+      //   }
+      // },
       {
         $unwind: {
           path: "$registeredCarAds"
@@ -394,11 +395,11 @@ router.get("/getAds", authMiddleware, queryBuilder, async (req, res) => {
     //     }
 
     let aggregation = [
-      {
-        $match: {
-          "_id": new mongodb.ObjectId(req.user.id)
-        }
-      },
+      // {
+      //   $match: {
+      //     "_id": new mongodb.ObjectId(req.user.id)
+      //   }
+      // },
       {
         $unwind: {
           path: "$registeredCarAds"
@@ -456,6 +457,90 @@ router.get("/getAds", authMiddleware, queryBuilder, async (req, res) => {
     logger.error({ event: "HTTP GET BRANDS ERROR ", error: error?.message })
     response_handler.errorResponse(res, "Server error", error)
   }
+});
+
+
+// ############################################
+// ############################################
+// ############################################
+router.get("/changeStatus/:targetAdId/:targetStatus", authMiddleware, queryBuilder, async (req, res) => {
+
+  db.update('users', {
+    "registeredCarAds._id": req.params.targetAdId
+  }, {
+    $set: {
+      [`registeredCarAds.$.status`]: ad_status.find(o => o.value == req.params.targetStatus),
+    },
+    $push: {
+      [`status_changes_log`]: {
+        $each: [{
+          user_id: req.user.id,
+          target_status: req.params.targetAdId
+        }]
+      }
+
+    }
+  }, {
+    upsert: false
+  })
+    .then((r) => {
+      logger.debug({ message: "Car ads changed status successfully", reqbody: req.body });
+
+
+      return response_handler.okResponse(res, "Car Ads changed successfully", {})
+
+    })
+    .catch((e) => {
+      logger.error({ event: "Error in Car Ad changing status ", reqbody: req.body, error: e?.message });
+      return response_handler.errorResponse(res, "Error in Car Ad status", req.body)
+
+    });
+
+
+
+});
+
+
+
+// ############################################
+// ############################################
+// ############################################
+router.get("/deleteAd/:targetAdId", authMiddleware, queryBuilder, async (req, res) => {
+
+  db.update('users', {
+    "_id": req.user.id,
+    "registeredCarAds._id": req.params.targetAdId
+  }, {
+    $set: {
+      [`registeredCarAds.$.status`]: ad_status.find(o => o.value == req.params.targetStatus),
+    },
+    $push: {
+      [`status_changes_log`]: {
+        $each: [{
+          user_id: req.user.id,
+          target_status: req.params.targetAdId
+        }]
+      }
+
+    }
+  }, {
+    upsert: false
+  })
+    .then((r) => {
+      logger.debug({ message: "Car ads changed status successfully", reqbody: req.body });
+
+
+      return response_handler.okResponse(res, "Car Ads changed successfully", {})
+
+    })
+    .catch((e) => {
+      logger.error({ event: "Error in Car Ad changing status ", reqbody: req.body, error: e?.message });
+      return response_handler.errorResponse(res, "Error in Car Ad status", req.body)
+
+    });
+
+
+
 });
 
 

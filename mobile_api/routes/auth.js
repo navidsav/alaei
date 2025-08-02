@@ -11,6 +11,8 @@ const logger = require("../../common/logger");
 const redis = require("redis");
 const { json } = require("body-parser");
 const response_handler = require("./response_handler");
+const generateCode = require("../../common/code_generator")
+
 const redis_client = redis.createClient({
   url: config.REDIS_URI,
   legacyMode: true
@@ -142,8 +144,8 @@ router.post("/register", async (req, res) => {
 
     const { FirstName, LastName, Password, MobileNo, NationalCode, ReferralCode } = req.body;
     const user = await User.findOne({ "phoneNumber": MobileNo });
-    if (!(FirstName && LastName && NationalCode && Password && MobileNo)) {
-      return responseHandler.nokResponse(res, "one of FirstName,LastName,NationalCode,Password,MobileNo are null", {})
+    if (!(FirstName && LastName && NationalCode && Password && MobileNo && ReferralCode)) {
+      return responseHandler.nokResponse(res, "one of ReferralCode,FirstName,LastName,NationalCode,Password,MobileNo are null", {})
     }
 
     if (user && user.status == "phone_verified") {
@@ -428,6 +430,34 @@ router.post("/SetUserNotificationToken", authMiddleware, async (req, res) => {
 
 
 
+// ############################################
+// ############################################
+// ############################################
+
+router.post("/generateReferalCode", authMiddleware, async (req, res) => {
+
+  const { city, agencyCode } = req.body;
+
+  // در لحظه ساخت یک فرد جدید
+  // const counter = await db.collection('counters').findOneAndUpdate(
+  //   { year: 2025, month: 8, agencyCode: 'AL01' },
+  //   { $inc: { count: 1 } },
+  //   { upsert: true, returnDocument: 'after' }
+  // );
+
+  // const personIndex = counter.value.count;
+
+
+
+  const code = generateCode({
+    agencyCode: agencyCode,
+    cityName: city,
+    personIndex: 22
+  });
+
+  return responseHandler.okResponse(res, "Code generated", { code: code })
+
+})
 
 // ############################################
 // ############################################
