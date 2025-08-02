@@ -463,7 +463,7 @@ router.get("/getAds", authMiddleware, queryBuilder, async (req, res) => {
 // ############################################
 // ############################################
 // ############################################
-router.get("/changeStatus/:targetAdId/:targetStatus", authMiddleware, queryBuilder, async (req, res) => {
+router.put("/changeStatus/:targetAdId/:targetStatus", authMiddleware, queryBuilder, async (req, res) => {
 
   db.update('users', {
     "registeredCarAds._id": req.params.targetAdId
