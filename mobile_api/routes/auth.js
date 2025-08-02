@@ -451,7 +451,7 @@ router.post("/generateReferalCode", authMiddleware, async (req, res) => {
 
   const code = generateCode({
     agencyCode: agencyCode,
-    cityName: city,
+    cityName: "Tehran", //get city name
     personIndex: 22
   });
 
