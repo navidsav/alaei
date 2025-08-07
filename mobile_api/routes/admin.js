@@ -72,12 +72,8 @@ router.post("/generateReferralCode", async (req, res) => {
     {}, // Match condition — update all or define a specific filter
     {
       $push: {
-        codes: {
-          $each: [{
-            code: code,
-            role: role
-          }]
-        }
+        code: code,
+        role: role
       }
     },
     {
