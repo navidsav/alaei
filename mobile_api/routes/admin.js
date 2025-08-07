@@ -70,7 +70,11 @@ router.post("/generateReferralCode", async (req, res) => {
 
   let ref_code = await db.update('referral_code',
     {},
-    { code: code },
+    {
+      $set: {
+        code: code
+      }
+    },
     {
       upsert: true, returnDocument: 'after'
     })
