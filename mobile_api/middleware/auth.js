@@ -19,7 +19,7 @@ const authorize = (...roles) => {
 };
 
 
-const authenticate = (req, res, next) => {
+const authenticate = async (req, res, next) => {
 
   const token = req.cookies.token || req.headers.authorization?.split(' ')[1];
 
@@ -27,7 +27,11 @@ const authenticate = (req, res, next) => {
 
   try {
     const decoded = jwt.verify(token.replace("Bearer ", ""), config.JWT_SECRET);
-    req.user = decoded;
+    const user = await User.findById(decoded.id)
+    req.user = {
+      ...decoded,
+      role: user.role
+    };
 
     let propNames = Object.getOwnPropertyNames(req.body);
 
