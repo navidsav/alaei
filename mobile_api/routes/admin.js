@@ -72,10 +72,10 @@ router.post("/generateReferralCode", async (req, res) => {
     {},
     {
       $push: {
-        [`referral_codes`]: {
+        $each: [{
           code: code,
           role: role
-        }
+        }]
       }
     },
     {
