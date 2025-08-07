@@ -72,7 +72,8 @@ router.post("/generateReferralCode", async (req, res) => {
     {},
     {
       $set: {
-        code: code
+        code: code,
+        role: role
       }
     },
     {
