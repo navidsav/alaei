@@ -191,7 +191,7 @@ router.post("/register", async (req, res) => {
       user.nationalCode = NationalCode
       user.lastName = LastName
       user.password = hashedPassword
-      user.referralCode = referralCode[0].codes[0].code
+      user.referralCode = referralCode[0].code
       user.role = {
         name: referralCode[0].role
       }
