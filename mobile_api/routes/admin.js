@@ -13,6 +13,7 @@ let db = {};
 
 const router = express.Router();
 
+const generateCode = require("../../common/code_generator")
 
 
 
@@ -58,6 +59,7 @@ router.post("/generateReferralCode", async (req, res) => {
 
 
   const code = generateCode({
+    year: newCount[0].year,
     agencyCode: agencyCode,
     cityName: city, //get city name
     personIndex: count

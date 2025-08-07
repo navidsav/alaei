@@ -28,6 +28,10 @@ const UserSchema = new mongoose.Schema({
 
     },
   ],
+  role: {
+    name: { type: String, require: true },
+
+  },
   userMessages: [
     {
       time: { type: Date, required: true },

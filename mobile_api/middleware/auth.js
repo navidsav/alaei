@@ -12,7 +12,7 @@ const response_handler = require("../routes/response_handler");
 const authorize = (...roles) => {
   return (req, res, next) => {
     if (!roles.includes(req.user.role)) {
-      return response_handler.nokResponse(res, "Forbidden: Insufficient role", {});
+      return response_handler.nokResponse(res, "Forbidden: Insufficient role", req.user);
     }
     next();
   };

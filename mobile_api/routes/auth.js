@@ -11,7 +11,6 @@ const logger = require("../../common/logger");
 const redis = require("redis");
 const { json } = require("body-parser");
 const response_handler = require("./response_handler");
-const generateCode = require("../../common/code_generator")
 
 const redis_client = redis.createClient({
   url: config.REDIS_URI,
@@ -311,7 +310,7 @@ router.post("/login", async (req, res) => {
 
     redis_client.set(`online:${user._id}`, token, 'EX', maxAge); // 1-hour expiry
 
-    return response_handler.okResponse(res, "Successfully logged in!", { token: token, user: { id: user._id, username: user.username.toLowerCase(), fullname: `${user.firstName} ${user.lastName}`, is_operator: (user.referralCode && user.referralCode.length > 1) } })
+    return response_handler.okResponse(res, "Successfully logged in!", { token: token, user: { roles: user.roles, id: user._id, username: user.username.toLowerCase(), fullname: `${user.firstName} ${user.lastName}`, is_operator: (user.referralCode && user.referralCode.length > 1) } })
     res.json({ token, user: { id: user._id, username: user.username.toLowerCase(), fullname: `${user.firstName} ${user.lastName}` }, IsSuccessful: true });
   } catch (error) {
     responseHandler.errorResponse(res, "Server error", {})
