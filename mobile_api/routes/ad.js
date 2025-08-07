@@ -467,7 +467,7 @@ router.get("/getAds", authenticate, queryBuilder, async (req, res) => {
 router.put("/changeStatus/:targetAdId/:targetStatus", authenticate, authorize("admin"), queryBuilder, async (req, res) => {
 
   db.update('users', {
-    "registeredCarAds._id": req.params.targetAdId
+    "registeredCarAds._id": new mongodb.ObjectId(req.params.targetAdId)
   }, {
     $set: {
       [`registeredCarAds.$.status`]: ad_status.find(o => o.value == req.params.targetStatus),
