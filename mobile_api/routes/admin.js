@@ -5,6 +5,7 @@ const { authenticate, authorize } = require("../middleware/auth");
 const responseHandler = require("./response_handler");
 const mongo = require('@intugine-technologies/mongodb');
 const mongodb = require("mongodb");
+const cities = require("../../common/admin/city")
 
 
 const logger = require("../../common/logger")
@@ -61,7 +62,7 @@ router.post("/generateReferralCode", async (req, res) => {
   const code = generateCode({
     year: newCount[0].year,
     agencyCode: agencyCode,
-    cityName: city, //get city name
+    cityName: cities.find(o => o.city).title, //get city name
     personIndex: count
   });
 
