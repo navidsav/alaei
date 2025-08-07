@@ -159,7 +159,7 @@ router.get("/getAds", authenticate, authorize("admin"), queryBuilder, async (req
 
   try {
 
-    let { phoneNumber, name, payment } = req.query;
+    let { phoneNumber, name, payment,status } = req.query;
 
     payment = (payment == undefined) ? "" : payment
     name = (name == undefined) ? "" : name
