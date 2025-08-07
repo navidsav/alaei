@@ -6,7 +6,7 @@ const User = require("../models/User");
 const config = require("../../config.json")
 const moment = require('moment');
 const responseHandler = require("./response_handler");
-const authMiddleware = require("../middleware/auth");
+const { authenticate, authorize } = require("../middleware/auth");
 const logger = require("../../common/logger");
 const redis = require("redis");
 const { json } = require("body-parser");
@@ -33,7 +33,7 @@ const generateVerifyCode = () => {
 
 
 
-router.get("/getUserId", authMiddleware, async (req, res) => {
+router.get("/getUserId", authenticate, async (req, res) => {
 
   if (!req.user) {
     return responseHandler.nokResponse(res, `Login first please!`,);
@@ -321,7 +321,7 @@ router.post("/login", async (req, res) => {
 
 
 
-router.get("/amIOnline", authMiddleware, async (req, res) => {
+router.get("/amIOnline", authenticate, async (req, res) => {
   const isOnline = await redis_client.exists(`online:${req.user.id}`);
 
   const user = await User.findById(req.user.id);
@@ -337,7 +337,7 @@ router.get("/amIOnline", authMiddleware, async (req, res) => {
 // ############################################
 // ############################################
 // RESET PASSWORD
-router.post("/resetpassword", authMiddleware, async (req, res) => {
+router.post("/resetpassword", authenticate, async (req, res) => {
   try {
 
     const { currentPassword, newPassword, confirmNewPassword } = req.body;
@@ -380,7 +380,7 @@ router.post("/resetpassword", authMiddleware, async (req, res) => {
 // ############################################
 // ############################################
 // ############################################
-router.post("/SetUserNotificationToken", authMiddleware, async (req, res) => {
+router.post("/SetUserNotificationToken", authenticate, async (req, res) => {
   try {
     const { TokenId } = req.body;
 
@@ -430,34 +430,6 @@ router.post("/SetUserNotificationToken", authMiddleware, async (req, res) => {
 
 
 
-// ############################################
-// ############################################
-// ############################################
-
-router.post("/generateReferalCode", authMiddleware, async (req, res) => {
-
-  const { city, agencyCode } = req.body;
-
-  // در لحظه ساخت یک فرد جدید
-  // const counter = await db.collection('counters').findOneAndUpdate(
-  //   { year: 2025, month: 8, agencyCode: 'AL01' },
-  //   { $inc: { count: 1 } },
-  //   { upsert: true, returnDocument: 'after' }
-  // );
-
-  // const personIndex = counter.value.count;
-
-
-
-  const code = generateCode({
-    agencyCode: agencyCode,
-    cityName: "Tehran", //get city name
-    personIndex: 22
-  });
-
-  return responseHandler.okResponse(res, "Code generated", { code: code })
-
-})
 
 // ############################################
 // ############################################
@@ -508,7 +480,7 @@ router.post("/ForgotPassWord", async (req, res) => {
 
 });
 
-router.delete('/logout', authMiddleware, async (req, res) => {
+router.delete('/logout', authenticate, async (req, res) => {
   const isOnline = await redis_client.del(`online:${req.user.id}`);
   res.clearCookie('token', { httpOnly: true, secure: true, sameSite: 'None' });
 

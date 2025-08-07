@@ -8,7 +8,18 @@ const response_handler = require("../routes/response_handler");
 
 
 
-module.exports = function (req, res, next) {
+
+const authorize = (...roles) => {
+  return (req, res, next) => {
+    if (!roles.includes(req.user.role)) {
+      return response_handler.nokResponse(res, "Forbidden: Insufficient role", {});
+    }
+    next();
+  };
+};
+
+
+const authenticate = (req, res, next) => {
 
   const token = req.cookies.token || req.headers.authorization?.split(' ')[1];
 
@@ -87,3 +98,5 @@ module.exports = function (req, res, next) {
 
   }
 };
+
+module.exports = { authenticate, authorize }

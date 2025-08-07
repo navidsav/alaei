@@ -1,6 +1,6 @@
 {
     "MOBILE_API_PORT": 65000,
-    "DB_URI": "mongodb://root:examplepassword@127.0.0.1:27017",
+    "DB_URI": "mongodb://root:examplepassword@api.autoalaei.ir:27017",
     "MOBILE_DB_NAME": "auto_alaei",
     "REDIS_URI": "redis://127.0.0.1:63791",
     "JWT_SECRET": "auto_masoud_aliakbar",

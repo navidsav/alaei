@@ -5,7 +5,7 @@ const logger = require("../../common/logger");
 const mongo = require('@intugine-technologies/mongodb');
 const mongodb = require("mongodb");
 const multer = require('multer');
-const authMiddleware = require("../middleware/auth")
+const {authenticate,authorize} = require("../middleware/auth")
 
 const delivery_status = require("../../common/car/delivery_status");
 const body_status = require("../../common/car/body_status");
@@ -52,7 +52,7 @@ const fileFilter = (req, file, cb) => {
 };
 
 const upload = multer({ storage, fileFilter });
-router.post("/add", authMiddleware, upload.array('images', 10), async (req, res) => {
+router.post("/add", authenticate, upload.array('images', 10), async (req, res) => {
 
 
   try {
@@ -183,7 +183,7 @@ router.post("/add", authMiddleware, upload.array('images', 10), async (req, res)
 
 
 
-router.post("/verify", authMiddleware, upload.array("images", 1), async (req, res) => {
+router.post("/verify", authenticate, upload.array("images", 1), async (req, res) => {
 
 
 
@@ -264,7 +264,7 @@ router.post("/verify", authMiddleware, upload.array("images", 1), async (req, re
 // ############################################
 // ############################################
 // ############################################
-router.get("/getad/:carAdId", authMiddleware, queryBuilder, async (req, res) => {
+router.get("/getad/:carAdId", authenticate, queryBuilder, async (req, res) => {
 
   try {
 
@@ -368,7 +368,7 @@ router.get("/getad/:carAdId", authMiddleware, queryBuilder, async (req, res) => 
 // ############################################
 // ############################################
 // ############################################
-router.get("/getAds", authMiddleware, queryBuilder, async (req, res) => {
+router.get("/getAds", authenticate, queryBuilder, async (req, res) => {
 
   try {
 
@@ -463,7 +463,7 @@ router.get("/getAds", authMiddleware, queryBuilder, async (req, res) => {
 // ############################################
 // ############################################
 // ############################################
-router.put("/changeStatus/:targetAdId/:targetStatus", authMiddleware, queryBuilder, async (req, res) => {
+router.put("/changeStatus/:targetAdId/:targetStatus", authenticate, queryBuilder, async (req, res) => {
 
   db.update('users', {
     "registeredCarAds._id": req.params.targetAdId
@@ -505,7 +505,7 @@ router.put("/changeStatus/:targetAdId/:targetStatus", authMiddleware, queryBuild
 // ############################################
 // ############################################
 // ############################################
-router.get("/deleteAd/:targetAdId", authMiddleware, queryBuilder, async (req, res) => {
+router.get("/deleteAd/:targetAdId", authenticate, queryBuilder, async (req, res) => {
 
   db.update('users', {
     "_id": req.user.id,

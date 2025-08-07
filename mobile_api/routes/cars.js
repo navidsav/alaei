@@ -6,7 +6,7 @@
 const express = require("express");
 const User = require("../models/User");
 const CarModel = require("../models/CarModel");
-const authMiddleware = require("../middleware/auth");
+const { authenticate, authorize } = require("../middleware/auth");
 const responseHandler = require("./response_handler");
 const CarBrand = require("../models/CarModel");
 const import_device = require("../models/ImportedDevice");
@@ -358,7 +358,7 @@ router.post("/GetcarModelDetailByCarModelId", async (req, res) => {
 
 
 // Register device
-router.post("/RegisterDevice", authMiddleware, async (req, res) => {
+router.post("/RegisterDevice", authenticate, async (req, res) => {
   try {
     const { Device, Car } = req.body;
 
@@ -428,7 +428,7 @@ router.post("/RegisterDevice", authMiddleware, async (req, res) => {
   }
 });
 
-router.post("/DeleteCars", authMiddleware, async (req, res) => {
+router.post("/DeleteCars", authenticate, async (req, res) => {
   try {
 
     const { CarId, PinCode } = req.body;
@@ -463,7 +463,7 @@ router.post("/DeleteCars", authMiddleware, async (req, res) => {
 });
 
 
-router.post("/EditCarInfo", authMiddleware, async (req, res) => {
+router.post("/EditCarInfo", authenticate, async (req, res) => {
   const {
     CarId,
     Tip,

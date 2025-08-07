@@ -3,10 +3,11 @@ const config = require('../config.json');
 const mongoose = require("mongoose");
 const authRoutes = require("./routes/auth");
 const carRoutes = require("./routes/cars");
+const adminRoutes = require("./routes/admin");
 const adRoutes = require("./routes/ad");
 const constantRoutes = require("./routes/constant");
 const bodyParser = require("body-parser");
-const authMiddleware = require("./middleware/auth");
+const { authenticate, authorize } = require("./middleware/auth");
 const cookieParser = require('cookie-parser');
 const cors = require('cors')
 
@@ -44,17 +45,19 @@ mongoose.connect(`${config.DB_URI}/${config.MOBILE_DB_NAME}?authSource=admin`, {
   .catch(err => console.log(err));
 
 
-app.use("/v2/car", authMiddleware, carRoutes);
+app.use("/v2/car", authenticate, carRoutes);
 app.use("/v2/user", authRoutes);
-app.use("/v2/brand", authMiddleware, carRoutes);
-app.use("/v2/carModel", authMiddleware, carRoutes);
-app.use("/v2/carModelDetail", authMiddleware, carRoutes)
-app.use("/v2/constant", authMiddleware, constantRoutes)
+app.use("/v2/brand", authenticate, carRoutes);
+app.use("/v2/carModel", authenticate, carRoutes);
+app.use("/v2/carModelDetail", authenticate, carRoutes)
+app.use("/v2/constant", authenticate, constantRoutes)
 app.use("/v2/ads", adRoutes)
+app.use("/admin/v2/", authenticate, authorize("admin"), adminRoutes)
 
 
 
-app.get("/api/protected", authMiddleware, (req, res) => {
+
+app.get("/api/protected", authenticate, (req, res) => {
   res.json({ message: "You have accessed a protected route", user: req.user });
 });
 
