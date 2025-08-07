@@ -177,7 +177,7 @@ router.post("/register", async (req, res) => {
       user.role = referralCode[0].role
       user.salt = salt
       user.status = 'complete'
-      user.save()
+      await user.save()
 
       const token = jwt.sign({ id: user._id }, config.JWT_SECRET, { expiresIn: "365d" });
 
