@@ -62,7 +62,7 @@ router.post("/generateReferralCode", async (req, res) => {
   const code = generateCode({
     year: newCount[0].year,
     agencyCode: agencyCode,
-    cityName: cities.find(o => o.city).title, //get city name
+    cityName: cities.find(o => o.value == city).title, //get city name
     personIndex: count
   });
 
