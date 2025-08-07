@@ -510,4 +510,20 @@ router.delete('/logout', authenticate, async (req, res) => {
 //   let wwqq = "Asda";
 // })()
 
+
+
+
+
+
+mongo(config.DB_URI, config.MOBILE_DB_NAME)
+  .then(async (DB) => {
+    db = DB;
+
+  })
+  .catch((e) => {
+    logger.error({ event: 'ERROR CONNECTING TO MOBILE_DB_NAME', err: e?.message })
+
+  });
+
+
 module.exports = router;
