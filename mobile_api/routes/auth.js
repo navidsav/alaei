@@ -152,11 +152,15 @@ router.post("/register", async (req, res) => {
 
       let referralCode = await db.aggregate("referral_code", [
         {
-          $match: { code: agencyCode },
+          $match: { code: ReferralCode },
         },
 
       ])
 
+      if (!referralCode || !referralCode[0]) {
+        return responseHandler.nokResponse(res, "Invalid refferal code", {})
+
+      }
 
       // Hash password
       const salt = await bcrypt.genSalt(10);
