@@ -476,7 +476,8 @@ router.put("/changeStatus/:targetAdId/:targetStatus", authenticate, authorize("a
       [`status_changes_log`]: {
         $each: [{
           user_id: req.user.id,
-          target_status: req.params.targetAdId
+          target_status: req.params.targetStatus,
+          changed_at: new Date()
         }]
       }
 
@@ -485,7 +486,7 @@ router.put("/changeStatus/:targetAdId/:targetStatus", authenticate, authorize("a
     upsert: false
   })
     .then((r) => {
-      logger.debug({ message: "Car ads changed status successfully", reqbody: req.body });
+      logger.debug({ message: "Car ads changed status successfully", reqbody: req.body, "s": ad_status.find(o => o.value == req.params.targetStatus) });
 
 
       return response_handler.okResponse(res, "Car Ads changed successfully", {})
