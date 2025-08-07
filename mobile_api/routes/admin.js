@@ -109,7 +109,8 @@ router.get("/getCodes", async (req, res) => {
           phoneNumber: 1,
           firstName: 1,
           lastName: 1,
-          referralCode: 1
+          referralCode: 1,
+          role: 1
         }
       }
     ])
