@@ -69,10 +69,12 @@ router.post("/generateReferralCode", async (req, res) => {
 
   let ref_code = await db.update(
     'referral_code',
-    {}, // Match condition — update all or define a specific filter
+    { code: code }, // match by unique code
     {
-      code: code,
-      role: role
+      $set: {
+        code: code,
+        role: role
+      }
     },
     {
       upsert: true,
