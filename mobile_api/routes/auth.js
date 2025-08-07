@@ -364,7 +364,7 @@ router.get("/amIOnline", authenticate, async (req, res) => {
   const user = await User.findById(req.user.id);
 
 
-  responseHandler.okResponse(res, "Is online", { is_online: isOnline, is_operator: (user.referralCode && user.referralCode.length > 1) })
+  responseHandler.okResponse(res, "Is online", { is_online: isOnline, role: user.role, is_operator: (user.referralCode && user.referralCode.length > 1) })
 
 
 })

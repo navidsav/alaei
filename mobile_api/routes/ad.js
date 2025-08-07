@@ -396,11 +396,11 @@ router.get("/getAds", authenticate, queryBuilder, async (req, res) => {
     //     }
 
     let aggregation = [
-      // {
-      //   $match: {
-      //     "_id": new mongodb.ObjectId(req.user.id)
-      //   }
-      // },
+      {
+        $match: {
+          "registeredCars.status.value": 100 // Montasher shode
+        }
+      },
       {
         $unwind: {
           path: "$registeredCarAds"
@@ -459,6 +459,8 @@ router.get("/getAds", authenticate, queryBuilder, async (req, res) => {
     response_handler.errorResponse(res, "Server error", error)
   }
 });
+
+
 
 
 // ############################################
