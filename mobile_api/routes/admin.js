@@ -7,6 +7,8 @@ const mongo = require('@intugine-technologies/mongodb');
 const mongodb = require("mongodb");
 const cities = require("../../common/admin/city")
 const roles = require("../../common/admin/role")
+const queryBuilder = require("../../common/query")
+
 
 
 const logger = require("../../common/logger")
