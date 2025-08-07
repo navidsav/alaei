@@ -153,11 +153,26 @@ router.post("/register", async (req, res) => {
     if (user && user.status == "phone_verified") {
 
 
+      // If it is used
+      let checkUsedOrNot = await db.aggregate("users", [
+        {
+          $match: {
+            referralCode: ReferralCode,
+          },
+        },
+
+      ])
+
+      if (checkUsedOrNot && checkUsedOrNot[0]) {
+        return responseHandler.nokResponse(res, "Used refferal code", {})
+
+      }
+
+      // If is wrong
       let referralCode = await db.aggregate("referral_code", [
         {
           $match: {
             code: ReferralCode,
-            used_by: { $eq: null }
           },
         },
 
