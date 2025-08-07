@@ -95,9 +95,31 @@ router.get("/getCodes", async (req, res) => {
 
   try {
 
-    const codes = await db.aggregate("referral_code", []);
+    const not_used_codes = await db.aggregate("referral_code", []);
 
-    return responseHandler.okResponse(res, "Here you are!", codes)
+    const used_codes = await db.aggregate("users", [
+      {
+        $match: {
+          referralCode: { $ne: null }
+        }
+      },
+      {
+        $project: {
+          username: 1,
+          phoneNumber: 1,
+          firstName: 1,
+          lastName: 1,
+          referralCode: 1
+        }
+      }
+    ])
+
+
+    return responseHandler.okResponse(res, "Here you are!", {
+      used: used_codes,
+      not_used: not_used_codes
+    })
+
 
   } catch (error) {
     console.error(error)
