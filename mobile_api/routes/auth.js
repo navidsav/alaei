@@ -188,9 +188,9 @@ router.post("/register", async (req, res) => {
       return responseHandler.nokResponse(res, "User not found or verified by phone number!", {})
 
     }
-  } catch {
+  } catch (error) {
     console.error("Server error:", error);
-    return responseHandler.errorResponse(res, "Server error", {})
+    return responseHandler.errorResponse(res, "Server error", { error: error })
 
   }
 
