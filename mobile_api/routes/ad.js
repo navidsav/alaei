@@ -486,7 +486,7 @@ router.put("/changeStatus/:targetAdId/:targetStatus", authenticate, authorize("a
     upsert: false
   })
     .then((r) => {
-      logger.debug({ message: "Car ads changed status successfully", reqbody: req.body, "s": ad_status.find(o => o.value == req.params.targetStatus) });
+      logger.debug({ message: "Car ads changed status successfully", reqbody: req.body, "s": ad_status.find(o => o.value.toString() == req.params.targetStatus) });
 
 
       return response_handler.okResponse(res, "Car Ads changed successfully", {})
