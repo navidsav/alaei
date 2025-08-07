@@ -150,10 +150,10 @@ router.post("/register", async (req, res) => {
     if (user && user.status == "phone_verified") {
 
 
-      let referralCode = await db.aggregate("referral_code_counter", [
+      let referralCode = await db.aggregate("referral_code", [
         {
-          $match: { year: new Date().getFullYear(), city: city, agencyCode: agencyCode },
-        }, 
+          $match: { code: agencyCode },
+        },
 
       ])
 
@@ -166,7 +166,8 @@ router.post("/register", async (req, res) => {
       user.nationalCode = NationalCode
       user.lastName = LastName
       user.password = hashedPassword
-      user.referralCode = ReferralCode
+      user.referralCode = referralCode[0].code
+      user.role = referralCode[0].role
       user.salt = salt
       user.status = 'complete'
       user.save()
