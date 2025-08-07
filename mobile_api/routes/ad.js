@@ -5,7 +5,7 @@ const logger = require("../../common/logger");
 const mongo = require('@intugine-technologies/mongodb');
 const mongodb = require("mongodb");
 const multer = require('multer');
-const {authenticate,authorize} = require("../middleware/auth")
+const { authenticate, authorize } = require("../middleware/auth")
 
 const delivery_status = require("../../common/car/delivery_status");
 const body_status = require("../../common/car/body_status");
@@ -52,7 +52,7 @@ const fileFilter = (req, file, cb) => {
 };
 
 const upload = multer({ storage, fileFilter });
-router.post("/add", authenticate, upload.array('images', 10), async (req, res) => {
+router.post("/add", authenticate, authorize("admin", "operator"), upload.array('images', 10), async (req, res) => {
 
 
   try {
@@ -128,6 +128,7 @@ router.post("/add", authenticate, upload.array('images', 10), async (req, res) =
 
       imageUrls: imageUrls,
 
+
       user: {
         username: user.username,
         id: user.id,
@@ -183,7 +184,7 @@ router.post("/add", authenticate, upload.array('images', 10), async (req, res) =
 
 
 
-router.post("/verify", authenticate, upload.array("images", 1), async (req, res) => {
+router.post("/verify", authenticate, authorize("admin", "operator"), upload.array("images", 1), async (req, res) => {
 
 
 
