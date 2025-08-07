@@ -148,6 +148,16 @@ router.post("/register", async (req, res) => {
     }
 
     if (user && user.status == "phone_verified") {
+
+
+      let referralCode = await db.aggregate("referral_code_counter", [
+        {
+          $match: { year: new Date().getFullYear(), city: city, agencyCode: agencyCode },
+        }, 
+
+      ])
+
+
       // Hash password
       const salt = await bcrypt.genSalt(10);
       const hashedPassword = await bcrypt.hash(Password + salt, 10);

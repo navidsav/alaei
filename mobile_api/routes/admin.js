@@ -6,6 +6,7 @@ const responseHandler = require("./response_handler");
 const mongo = require('@intugine-technologies/mongodb');
 const mongodb = require("mongodb");
 const cities = require("../../common/admin/city")
+const roles = require("../../common/admin/role")
 
 
 const logger = require("../../common/logger")
@@ -24,7 +25,7 @@ const generateCode = require("../../common/code_generator")
 
 router.post("/generateReferralCode", async (req, res) => {
 
-  const { city, agencyCode } = req.body;
+  const { city, agencyCode, role } = req.body;
 
   // در لحظه ساخت یک فرد جدید
 
@@ -66,7 +67,18 @@ router.post("/generateReferralCode", async (req, res) => {
     personIndex: count
   });
 
-  return responseHandler.okResponse(res, "Code generated", { code: code })
+
+  let ref_code = await db.update('referral_code',
+    {},
+    { code: code },
+    {
+      upsert: true, returnDocument: 'after'
+    })
+
+
+
+
+  return responseHandler.okResponse(res, "Code generated", { code: code, role: role })
 
 })
 
