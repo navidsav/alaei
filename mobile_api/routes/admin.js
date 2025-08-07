@@ -184,7 +184,7 @@ router.get("/getAds", authenticate, authorize("admin"), queryBuilder, async (req
     let aggregation = [
       {
         $match: {
-          "registeredCars.status.value": 0 // dar entezar e barrresi
+          "registeredCarAds.status.value": 0 // dar entezar e barrresi
         }
       },
       {

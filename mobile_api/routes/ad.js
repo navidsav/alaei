@@ -398,7 +398,7 @@ router.get("/getAds", authenticate, queryBuilder, async (req, res) => {
     let aggregation = [
       {
         $match: {
-          "registeredCars.status.value": 100 // Montasher shode
+          "registeredCarAds.status.value": 100 // Montasher shode
         }
       },
       {
