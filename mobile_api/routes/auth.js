@@ -11,6 +11,9 @@ const logger = require("../../common/logger");
 const redis = require("redis");
 const { json } = require("body-parser");
 const response_handler = require("./response_handler");
+const mongo = require('@intugine-technologies/mongodb');
+const mongodb = require("mongodb");
+
 
 const redis_client = redis.createClient({
   url: config.REDIS_URI,
