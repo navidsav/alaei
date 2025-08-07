@@ -67,22 +67,24 @@ router.post("/generateReferralCode", async (req, res) => {
     personIndex: count
   });
 
-
-  let ref_code = await db.update('referral_code',
-    {},
+  let ref_code = await db.update(
+    'referral_code',
+    {}, // Match condition — update all or define a specific filter
     {
       $push: {
-        $each: [{
-          code: code,
-          role: role
-        }]
+        codes: {
+          $each: [{
+            code: code,
+            role: role
+          }]
+        }
       }
     },
     {
-      upsert: true, returnDocument: 'after'
-    })
-
-
+      upsert: true,
+      returnDocument: 'after'
+    }
+  ); \
 
 
   return responseHandler.okResponse(res, "Code generated", { code: code, role: role })
