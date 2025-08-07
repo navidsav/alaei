@@ -239,10 +239,10 @@ router.get("/getAds", authenticate, authorize("admin"), queryBuilder, async (req
     const ads = await db.aggregate("users", aggregation);
 
     // Respond with the car details
-    return response_handler.okResponse(res, "here you are", { ads: ads, total: total[0] })
+    return responseHandler.okResponse(res, "here you are", { ads: ads, total: total[0] })
   } catch (error) {
     logger.error({ event: "HTTP GET BRANDS ERROR ", error: error?.message })
-    response_handler.errorResponse(res, "Server error", error)
+    responseHandler.errorResponse(res, "Server error", error)
   }
 });
 
