@@ -84,7 +84,7 @@ router.post("/generateReferralCode", async (req, res) => {
       upsert: true,
       returnDocument: 'after'
     }
-  ); \
+  );
 
 
   return responseHandler.okResponse(res, "Code generated", { code: code, role: role })

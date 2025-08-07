@@ -155,7 +155,10 @@ router.post("/register", async (req, res) => {
 
       let referralCode = await db.aggregate("referral_code", [
         {
-          $match: { code: ReferralCode },
+          $match: {
+            code: ReferralCode,
+            used_by: { $eq: null }
+          },
         },
 
       ])
