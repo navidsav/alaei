@@ -463,6 +463,50 @@ router.get("/getAds", authenticate, queryBuilder, async (req, res) => {
 
 
 
+
+// ############################################
+// ############################################
+// ############################################
+router.post("/changeStatus", authenticate, authorize("admin"), queryBuilder, async (req, res) => {
+
+
+  const { id, status } = req.body;
+  db.update('users', {
+    "registeredCarAds._id": new mongodb.ObjectId(id)
+  }, {
+    $set: {
+      [`registeredCarAds.$.status`]: ad_status.find(o => o.value == status),
+    },
+    $push: {
+      [`status_changes_log`]: {
+        $each: [{
+          user_id: req.user.id,
+          target_status: status,
+          changed_at: new Date()
+        }]
+      }
+
+    }
+  }, {
+    upsert: false
+  })
+    .then((r) => {
+      logger.debug({ message: "Car ads changed status successfully", reqbody: req.body, "s": ad_status.find(o => o.value.toString() == req.params.targetStatus) });
+
+
+      return response_handler.okResponse(res, "Car Ads changed successfully", { "s": ad_status.find(o => o.value.toString() == req.params.targetStatus) })
+
+    })
+    .catch((e) => {
+      logger.error({ event: "Error in Car Ad changing status ", reqbody: req.body, error: e?.message });
+      return response_handler.errorResponse(res, "Error in Car Ad status", req.body)
+
+    });
+
+
+
+});
+
 // ############################################
 // ############################################
 // ############################################
