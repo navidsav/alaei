@@ -30,7 +30,7 @@ router.post("/generateReferralCode", async (req, res) => {
   const { city, agencyCode, role } = req.body;
 
   if (!role)
-    return responseHandler.okResponse(res, "Please select the role!", { })
+    return responseHandler.nokResponse(res, "Please select the role!", {})
 
 
   // در لحظه ساخت یک فرد جدید
