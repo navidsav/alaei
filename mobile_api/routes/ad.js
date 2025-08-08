@@ -491,10 +491,10 @@ router.post("/changeStatus", authenticate, authorize("admin"), queryBuilder, asy
     upsert: false
   })
     .then((r) => {
-      logger.debug({ message: "Car ads changed status successfully", reqbody: req.body, "s": ad_status.find(o => o.value.toString() == req.params.targetStatus) });
+      logger.debug({ message: "Car ads changed status successfully", reqbody: req.body, "s": ad_status.find(o => o.value.toString() == status) });
 
 
-      return response_handler.okResponse(res, "Car Ads changed successfully", { "s": ad_status.find(o => o.value.toString() == req.params.targetStatus) })
+      return response_handler.okResponse(res, "Car Ads changed successfully", { "s": ad_status.find(o => o.value.toString() == status) })
 
     })
     .catch((e) => {
