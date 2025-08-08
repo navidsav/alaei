@@ -29,9 +29,11 @@ router.post("/generateReferralCode", async (req, res) => {
 
   const { city, agencyCode, role } = req.body;
 
+  if (!role)
+    return responseHandler.okResponse(res, "Please select the role!", { })
+
+
   // در لحظه ساخت یک فرد جدید
-
-
   let update = await db.update('referral_code_counter',
     { year: new Date().getFullYear(), city: city, agencyCode: agencyCode },
     { $inc: { count: 1 } },
@@ -159,7 +161,7 @@ router.get("/getAds", authenticate, authorize("admin"), queryBuilder, async (req
 
   try {
 
-    let { phoneNumber, name, payment,status } = req.query;
+    let { phoneNumber, name, payment, status } = req.query;
 
     payment = (payment == undefined) ? "" : payment
     name = (name == undefined) ? "" : name
