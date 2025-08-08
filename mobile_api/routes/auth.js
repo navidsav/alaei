@@ -200,11 +200,8 @@ router.post("/register", async (req, res) => {
       await user.save()
 
       const token = jwt.sign({ id: user._id }, config.JWT_SECRET, { expiresIn: "365d" });
-
-
-      return responseHandler.okResponse(res, "User saved successfully", { token: token })
-
-
+      
+      return response_handler.okResponse(res, "User saved successfully", { token: token, user: { role: user.role, id: user._id, username: user.username.toLowerCase(), fullname: `${user.firstName} ${user.lastName}`, is_operator: (user.referralCode && user.referralCode.length > 1) } })
 
     }
     else {
