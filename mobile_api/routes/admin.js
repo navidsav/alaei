@@ -109,11 +109,31 @@ router.get("/getCodes", queryBuilder, async (req, res) => {
 
   try {
 
-    const not_used_codes = await db.aggregate("referral_code", [{
-      $sort: {
-        _id: -1
-      }
-    }]);
+    const not_used_codes = await db.aggregate("referral_code", [
+      {
+        $lookup: {
+          from: "users",
+          localField: "code",
+          foreignField: "referralCode",
+          as: "users"
+        }
+      },
+      {
+        $match: {
+          users: {
+            $size: 0
+          }
+        }
+      },
+      {
+        $project: {
+          "users": 0
+        }
+      }, {
+        $sort: {
+          _id: -1
+        }
+      }]);
 
     const used_codes = await db.aggregate("users", [
       {
