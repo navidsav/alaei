@@ -200,8 +200,18 @@ router.post("/register", async (req, res) => {
       await user.save()
 
       const token = jwt.sign({ id: user._id }, config.JWT_SECRET, { expiresIn: "365d" });
-      
-      return response_handler.okResponse(res, "User saved successfully", { token: token, user: { role: user.role, id: user._id, username: user.username.toLowerCase(), fullname: `${user.firstName} ${user.lastName}`, is_operator: (user.referralCode && user.referralCode.length > 1) } })
+
+      return response_handler.okResponse(res, "User saved successfully", {
+        token: token,
+        user: {
+          role: user.role,
+          id: user._id,
+          username: user.username.toLowerCase(),
+          fullname: `${user.firstName} ${user.lastName}`,
+          is_operator: (user.referralCode && user.referralCode.length > 1),
+          nationalCode: user.nationalCode
+        }
+      })
 
     }
     else {
@@ -345,7 +355,18 @@ router.post("/login", async (req, res) => {
 
     redis_client.set(`online:${user._id}`, token, 'EX', maxAge); // 1-hour expiry
 
-    return response_handler.okResponse(res, "Successfully logged in!", { token: token, user: { role: user.role, id: user._id, username: user.username.toLowerCase(), fullname: `${user.firstName} ${user.lastName}`, is_operator: (user.referralCode && user.referralCode.length > 1) } })
+    return response_handler.okResponse(res, "Successfully logged in!", {
+      token: token,
+
+      user: {
+        role: user.role,
+        id: user._id,
+        username: user.username.toLowerCase(),
+        fullname: `${user.firstName} ${user.lastName}`,
+        is_operator: (user.referralCode && user.referralCode.length > 1),
+        nationalCode: user.nationalCode
+      }
+    })
     res.json({ token, user: { id: user._id, username: user.username.toLowerCase(), fullname: `${user.firstName} ${user.lastName}` }, IsSuccessful: true });
   } catch (error) {
     responseHandler.errorResponse(res, "Server error", {})
@@ -361,7 +382,15 @@ router.get("/amIOnline", authenticate, async (req, res) => {
   const user = await User.findById(req.user.id);
 
 
-  responseHandler.okResponse(res, "Is online", { is_online: isOnline, role: user.role, is_operator: (user.referralCode && user.referralCode.length > 1) })
+  responseHandler.okResponse(res, "Is online", {
+    is_online: isOnline,
+    is_operator: (user.referralCode && user.referralCode.length > 1),
+    role: user.role,
+    id: user._id,
+    username: user.username.toLowerCase(),
+    fullname: `${user.firstName} ${user.lastName}`,
+    nationalCode: user.nationalCode
+  })
 
 
 })
