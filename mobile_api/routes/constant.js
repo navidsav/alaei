@@ -42,6 +42,8 @@ router.get("/color", async (req, res) => {
 
 const queryBuilder = require("../../common/query");
 const ad_status = require("../../common/car/ad_status");
+const cities = require("../../common/admin/city");
+const agencies = require("../../common/admin/agency");
 // ############################################
 // ############################################
 // ############################################
@@ -410,9 +412,30 @@ router.get("/getPayMethods", async (req, res) => {
 // ############################################
 router.get("/getStatuses", async (req, res) => {
 
-  return response_handler.okResponse(res,"Here your are",ad_status);
+  return response_handler.okResponse(res, "Here your are", ad_status);
 
 })
+
+
+// ############################################
+// ############################################
+// ############################################
+router.get("/getCities", async (req, res) => {
+
+  return response_handler.okResponse(res, "Here your are", cities);
+
+})
+
+
+// ############################################
+// ############################################
+// ############################################
+router.get("/getAgencies", async (req, res) => {
+
+  return response_handler.okResponse(res, "Here your are", agencies);
+
+})
+
 
 
 
