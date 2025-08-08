@@ -78,7 +78,8 @@ router.post("/generateReferralCode", async (req, res) => {
     {
       $set: {
         code: code,
-        role: role
+        role: role,
+        updatedAt: new Date()
       }
     },
     {
@@ -96,7 +97,7 @@ router.post("/generateReferralCode", async (req, res) => {
 // ############################################
 // ############################################
 // ############################################
-router.get("/getCodes", async (req, res) => {
+router.get("/getCodes", queryBuilder, async (req, res) => {
 
   try {
 
@@ -116,6 +117,11 @@ router.get("/getCodes", async (req, res) => {
           lastName: 1,
           referralCode: 1,
           role: 1
+        }
+      },
+      {
+        $sort: {
+          _id: -1
         }
       }
     ])
