@@ -34,6 +34,14 @@ router.post("/generateReferralCode", async (req, res) => {
     return responseHandler.nokResponse(res, "Please select the role!", {})
 
 
+  if (agency.findIndex(o => o.value == agencyCode) < 0)
+    return responseHandler.nokResponse(res, "Please select the agency!", {})
+
+
+  if (cities.findIndex(o => o.value == city) < 0)
+    return responseHandler.nokResponse(res, "Please select the city!", {})
+
+
   // در لحظه ساخت یک فرد جدید
   let update = await db.update('referral_code_counter',
     { year: new Date().getFullYear(), city: city, agencyCode: agencyCode },
