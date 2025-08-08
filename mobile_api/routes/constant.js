@@ -410,7 +410,7 @@ router.get("/getPayMethods", async (req, res) => {
 // ############################################
 router.get("/getStatuses", async (req, res) => {
 
-  return ad_status;
+  return response_handler.okResponse(res,"Here your are",ad_status);
 
 })
 
