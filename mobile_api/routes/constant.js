@@ -408,7 +408,7 @@ router.get("/getPayMethods", async (req, res) => {
 // ############################################
 // ############################################
 // ############################################
-router.get("/getStatuses", authenticate, async (req, res) => {
+router.get("/getStatuses", async (req, res) => {
 
   return ad_status;
 
