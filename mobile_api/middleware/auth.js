@@ -28,6 +28,8 @@ const authenticate = async (req, res, next) => {
   try {
     const decoded = jwt.verify(token.replace("Bearer ", ""), config.JWT_SECRET);
     const user = await User.findById(decoded.id)
+    if (!user)
+      return response_handler.okResponse(res, "Already logged out!", {});
     req.user = {
       ...decoded,
       role: user.role
