@@ -250,11 +250,11 @@ router.get("/getAds", authenticate, authorize("admin"), queryBuilder, async (req
           registeredCarAds: 0
         }
       },
-      {
-        $match: {
-          "status.value": 0 // dar hale barresi
-        }
-      }
+      // {
+      //   $match: {
+      //     "status.value": 0 // dar hale barresi
+      //   }
+      // }
     ];
 
     let total = -1;
