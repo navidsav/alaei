@@ -223,11 +223,7 @@ router.get("/getAds", authenticate, authorize("admin"), queryBuilder, async (req
     //     }
 
     let aggregation = [
-      {
-        $match: {
-          "registeredCarAds.status.value": 0 // dar entezar e barrresi
-        }
-      },
+
       {
         $unwind: {
           path: "$registeredCarAds"
@@ -252,6 +248,11 @@ router.get("/getAds", authenticate, authorize("admin"), queryBuilder, async (req
       {
         $project: {
           registeredCarAds: 0
+        }
+      },
+      {
+        $match: {
+          "status.value": 0 // dar hale barresi
         }
       }
     ];

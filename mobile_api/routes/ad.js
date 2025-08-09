@@ -396,11 +396,7 @@ router.get("/getAds", authenticate, queryBuilder, async (req, res) => {
     //     }
 
     let aggregation = [
-      {
-        $match: {
-          "registeredCarAds.status.value": 100 // Montasher shode
-        }
-      },
+     
       {
         $unwind: {
           path: "$registeredCarAds"
@@ -425,6 +421,10 @@ router.get("/getAds", authenticate, queryBuilder, async (req, res) => {
       {
         $project: {
           registeredCarAds: 0
+        }
+      }, {
+        $match: {
+          "status.value": 100 // motasher shode
         }
       }
     ];
