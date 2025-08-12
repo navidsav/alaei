@@ -371,7 +371,11 @@ router.get("/getad/:carAdId", authenticate, queryBuilder, async (req, res) => {
           registeredCarAds: 0
         }
       },
-
+      {
+        $set: {
+          can_edit: { $eq: ["$_id", new mongodb.ObjectId(req.user.id)] }
+        }
+      }
     ];
 
     let total = -1;
