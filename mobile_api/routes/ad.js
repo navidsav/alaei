@@ -166,8 +166,12 @@ router.post("/add/:targetAdId?", authenticate, authorize("admin", "operator"), u
         .then((r) => {
           logger.debug({ message: "Car ads updated successfully", reqbody: req.body });
 
+          if (r.modifiedCount) {
+            return response_handler.okResponse(res, "Car Ads updated successfully", { result: r, added: insertThis })
 
-          return response_handler.okResponse(res, "Car Ads updated successfully", { result: r, added: insertThis })
+          }
+
+          return response_handler.nokResponse(res, "Update failed", { result: r })
 
         })
         .catch((e) => {
