@@ -437,7 +437,6 @@ router.get("/getAds", authenticate, queryBuilder, async (req, res) => {
     //     }
 
     let aggregation = [
-
       {
         $unwind: {
           path: "$registeredCarAds"
@@ -462,6 +461,11 @@ router.get("/getAds", authenticate, queryBuilder, async (req, res) => {
       {
         $project: {
           registeredCarAds: 0
+        }
+      },
+      {
+        $set: {
+          can_edit: { $eq: ["$_id", ObjectId("6895b759ba793f48bdca4e5f")] }
         }
       }
     ];
