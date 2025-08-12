@@ -84,6 +84,7 @@ router.post("/add/:targetAdId?", authenticate, authorize("admin", "operator"), u
 
 
     let statuses = await loadAdStatus();
+    console.log(" ss : ", statuses)
     let user = await User.findById(req.user.id);
     let trim = await db.aggregate("carbrands", [
       {
