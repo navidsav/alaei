@@ -30,7 +30,8 @@ let db = {};
 // ############################################
 const path = require("path");
 const User = require("../models/User");
-const ad_status = require("../../common/car/ad_status");
+const { loadAdStatus } = require("../../common/car/ad_status");
+
 // تنظیم محل ذخیره فایل‌ها و فرمت نام فایل
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
@@ -135,7 +136,7 @@ router.post("/add", authenticate, authorize("admin", "operator"), upload.array('
         phoneNumber: user.phoneNumber,// TODO: read this online
         name: `${user.firstName} ${user.lastName}`
       },
-      status: ad_status.find(o => o.value == 0),
+      status: (await loadAdStatus()).find(o => o.value == 0),
       descrption: desc,
       _id: new mongodb.ObjectId(),
       createdAt: new Date(),
@@ -396,7 +397,7 @@ router.get("/getAds", authenticate, queryBuilder, async (req, res) => {
     //     }
 
     let aggregation = [
-     
+
       {
         $unwind: {
           path: "$registeredCarAds"
@@ -422,12 +423,18 @@ router.get("/getAds", authenticate, queryBuilder, async (req, res) => {
         $project: {
           registeredCarAds: 0
         }
-      }, {
+      }
+    ];
+
+
+    // If user is admin
+    if (req.user.role.name != "admin") {
+      aggregation.push({
         $match: {
           "status.value": 100 // motasher shode
         }
-      }
-    ];
+      });
+    }
 
     let total = -1;
 
@@ -471,11 +478,14 @@ router.post("/changeStatus", authenticate, authorize("admin"), queryBuilder, asy
 
 
   const { id, status } = req.body;
+
+  let statues = await loadAdStatus();
+
   db.update('users', {
     "registeredCarAds._id": new mongodb.ObjectId(id)
   }, {
     $set: {
-      [`registeredCarAds.$.status`]: ad_status.find(o => o.value == status),
+      [`registeredCarAds.$.status`]: statues.find(o => o.value == status),
     },
     $push: {
       [`status_changes_log`]: {
@@ -491,10 +501,10 @@ router.post("/changeStatus", authenticate, authorize("admin"), queryBuilder, asy
     upsert: false
   })
     .then((r) => {
-      logger.debug({ message: "Car ads changed status successfully", reqbody: req.body, "s": ad_status.find(o => o.value.toString() == status) });
+      logger.debug({ message: "Car ads changed status successfully", reqbody: req.body, "s": statues.find(o => o.value.toString() == status) });
 
 
-      return response_handler.okResponse(res, "Car Ads changed successfully", { "s": ad_status.find(o => o.value.toString() == status) })
+      return response_handler.okResponse(res, "Car Ads changed successfully", { "s": statues.find(o => o.value.toString() == status) })
 
     })
     .catch((e) => {
@@ -512,11 +522,13 @@ router.post("/changeStatus", authenticate, authorize("admin"), queryBuilder, asy
 // ############################################
 router.put("/changeStatus/:targetAdId/:targetStatus", authenticate, authorize("admin"), queryBuilder, async (req, res) => {
 
+
+  let statuses = await loadAdStatus();
   db.update('users', {
     "registeredCarAds._id": new mongodb.ObjectId(req.params.targetAdId)
   }, {
     $set: {
-      [`registeredCarAds.$.status`]: ad_status.find(o => o.value == req.params.targetStatus),
+      [`registeredCarAds.$.status`]: statuses.find(o => o.value == req.params.targetStatus),
     },
     $push: {
       [`status_changes_log`]: {
@@ -532,10 +544,10 @@ router.put("/changeStatus/:targetAdId/:targetStatus", authenticate, authorize("a
     upsert: false
   })
     .then((r) => {
-      logger.debug({ message: "Car ads changed status successfully", reqbody: req.body, "s": ad_status.find(o => o.value.toString() == req.params.targetStatus) });
+      logger.debug({ message: "Car ads changed status successfully", reqbody: req.body, "s": statuses.find(o => o.value.toString() == req.params.targetStatus) });
 
 
-      return response_handler.okResponse(res, "Car Ads changed successfully", { "s": ad_status.find(o => o.value.toString() == req.params.targetStatus) })
+      return response_handler.okResponse(res, "Car Ads changed successfully", { "s": statuses.find(o => o.value.toString() == req.params.targetStatus) })
 
     })
     .catch((e) => {
@@ -555,12 +567,14 @@ router.put("/changeStatus/:targetAdId/:targetStatus", authenticate, authorize("a
 // ############################################
 router.get("/deleteAd/:targetAdId", authenticate, queryBuilder, async (req, res) => {
 
+
+  let statues = await loadAdStatus();
   db.update('users', {
     "_id": req.user.id,
     "registeredCarAds._id": req.params.targetAdId
   }, {
     $set: {
-      [`registeredCarAds.$.status`]: ad_status.find(o => o.value == req.params.targetStatus),
+      [`registeredCarAds.$.status`]: statues.find(o => o.value == req.params.targetStatus),
     },
     $push: {
       [`status_changes_log`]: {

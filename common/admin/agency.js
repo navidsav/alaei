@@ -1,15 +1,20 @@
-module.exports = [{
-    "title": "AL10",
-    "value": 10,
-}, {
-    "title": "AL04",
-    "value": 4,
-},
-{
-    "title": "AL11",
-    "value": 11,
-},
-{
-    "title": "AL12",
-    "value": 12,
-}]
+// adStatusLoader.js
+const config = require("../../config.json");
+const mongo = require('@intugine-technologies/mongodb');
+const mongodb = require("mongodb");
+
+async function loadAgencies() {
+    try {
+        const db = await mongo(config.DB_URI, config.MOBILE_DB_NAME);
+        const agg = [];
+        const packetsQuery = await db.aggregate("agency", agg);
+        return packetsQuery.filter(agency => agency.value);
+    } catch (e) {
+        console.error({ event: 'ERROR CONNECTING TO MOBILE_DB_NAME', err: e?.message });
+        return [];
+    }
+}
+
+module.exports = { loadAgencies };
+
+
