@@ -8,7 +8,7 @@ async function loadAdStatus() {
         const db = await mongo(config.DB_URI, config.MOBILE_DB_NAME);
         const agg = [];
         const packetsQuery = await db.aggregate("ad_status", agg);
-        return packetsQuery.filter(status => status.value);
+        return packetsQuery;
     } catch (e) {
         console.error({ event: 'ERROR CONNECTING TO MOBILE_DB_NAME', err: e?.message });
         return [];
