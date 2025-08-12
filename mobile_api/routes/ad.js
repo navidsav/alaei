@@ -83,7 +83,7 @@ router.post("/add/:targetAdId?", authenticate, authorize("admin", "operator"), u
     const imageUrls = req.files.map(file => `${config.CDN_URL}/alaei/uploads/${file.filename}`);
 
 
-
+    let statuses = await loadAdStatus();
     let user = await User.findById(req.user.id);
     let trim = await db.aggregate("carbrands", [
       {
@@ -136,7 +136,7 @@ router.post("/add/:targetAdId?", authenticate, authorize("admin", "operator"), u
         phoneNumber: user.phoneNumber,// TODO: read this online
         name: `${user.firstName} ${user.lastName}`
       },
-      status: (await loadAdStatus()).find(o => o.value == 0),
+      status: statuses.find(o => o.value == 0),
       descrption: desc,
       _id: new mongodb.ObjectId(),
       createdAt: new Date(),
