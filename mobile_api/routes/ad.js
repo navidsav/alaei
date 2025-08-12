@@ -53,7 +53,7 @@ const fileFilter = (req, file, cb) => {
 };
 
 const upload = multer({ storage, fileFilter });
-router.post("/add/:targetAdId", authenticate, authorize("admin", "operator"), upload.array('images', 10), async (req, res) => {
+router.post("/add/:targetAdId?", authenticate, authorize("admin", "operator"), upload.array('images', 10), async (req, res) => {
 
 
   try {
@@ -178,7 +178,7 @@ router.post("/add/:targetAdId", authenticate, authorize("admin", "operator"), up
     // Respond with the car details
     // return response_handler.okResponse(res, "Succeddfully added", { just_added: insertThis })
   } catch (error) {
-    logger.error({ event: "HTTP GET COLORS ERROR ", error: error?.message })
+    logger.error({ event: "HTTP Add Ad ERROR ", error: error?.message })
     response_handler.errorResponse(res, "Server error", error)
   }
 });
