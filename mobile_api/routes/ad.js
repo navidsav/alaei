@@ -149,10 +149,10 @@ router.post("/add/:targetAdId?", authenticate, authorize("admin", "operator"), u
 
       db.update('users', {
         _id: new mongodb.ObjectId(req.user.id),
-        "registeredCars._id": new mongodb.ObjectId(req.params.targetAdId),
+        "registeredCarAds._id": new mongodb.ObjectId(req.params.targetAdId),
       }, {
         $set: {
-          [`registeredCars.$`]: updatingAd,
+          [`registeredCarAds.$`]: updatingAd,
         },
         // $push: {
         //   [`registeredCarAds`]: {
