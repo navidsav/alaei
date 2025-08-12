@@ -113,7 +113,6 @@ router.post("/add/:targetAdId?", authenticate, authorize("admin", "operator"), u
     ])
 
     let insertThis = {
-      _id: new mongodb.ObjectId(req.params.targetAdId),
       trim: { ...trim[0], trim_id },
       production_year: production_year,
 
@@ -145,34 +144,70 @@ router.post("/add/:targetAdId?", authenticate, authorize("admin", "operator"), u
     };
 
 
+    if (req.params.targetAdId) {
+      let updatingAd = { ...insertThis, _id: new mongodb.ObjectId(req.params.targetAdId) }
 
-    db.update('users', {
-      _id: new mongodb.ObjectId(req.user.id),
-    }, {
-      // $set: {
-      //   [`registeredCars.$.checklist_milage.${checkItem}`]: value,
-      // },
-      $push: {
-        [`registeredCarAds`]: {
-          $each: [insertThis]
-        }
+      db.update('users', {
+        _id: new mongodb.ObjectId(req.user.id),
+        "registeredCars._id": new mongodb.ObjectId(req.params.targetAdId),
+      }, {
+        $set: {
+          [`registeredCars.$`]: updatingAd,
+        },
+        // $push: {
+        //   [`registeredCarAds`]: {
+        //     $each: [insertThis]
+        //   }
 
-      }
-    }, {
-      upsert: true
-    })
-      .then((r) => {
-        logger.debug({ message: "Car ads added successfully", reqbody: req.body });
-
-
-        return response_handler.okResponse(res, "Car Ads Added successfully", { added: insertThis })
-
+        // }
+      }, {
+        upsert: false
       })
-      .catch((e) => {
-        logger.error({ event: "Error in Car Ad Adding ", reqbody: req.body, error: e?.message });
-        return response_handler.errorResponse(res, "Error in Car Ad Adding", req.body)
+        .then((r) => {
+          logger.debug({ message: "Car ads updated successfully", reqbody: req.body });
 
-      });
+
+          return response_handler.okResponse(res, "Car Ads updated successfully", { added: insertThis })
+
+        })
+        .catch((e) => {
+          logger.error({ event: "Error in Car Ad updating ", reqbody: req.body, error: e?.message });
+          return response_handler.errorResponse(res, "Error in Car Ad updating", req.body)
+
+        });
+
+
+    } else {
+      db.update('users', {
+        _id: new mongodb.ObjectId(req.user.id),
+      }, {
+        // $set: {
+        //   [`registeredCars.$.checklist_milage.${checkItem}`]: value,
+        // },
+        $push: {
+          [`registeredCarAds`]: {
+            $each: [insertThis]
+          }
+
+        }
+      }, {
+        upsert: false
+      })
+        .then((r) => {
+          logger.debug({ message: "Car ads added successfully", reqbody: req.body });
+
+
+          return response_handler.okResponse(res, "Car Ads Added successfully", { added: insertThis })
+
+        })
+        .catch((e) => {
+          logger.error({ event: "Error in Car Ad Adding ", reqbody: req.body, error: e?.message });
+          return response_handler.errorResponse(res, "Error in Car Ad Adding", req.body)
+
+        });
+
+    }
+
 
 
     // Respond with the car details
