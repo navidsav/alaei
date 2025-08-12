@@ -465,7 +465,7 @@ router.get("/getAds", authenticate, queryBuilder, async (req, res) => {
       },
       {
         $set: {
-          can_edit: { $eq: ["$_id", ObjectId("6895b759ba793f48bdca4e5f")] }
+          can_edit: { $eq: ["$_id", new mongodb.ObjectId(req.user.id)] }
         }
       }
     ];
