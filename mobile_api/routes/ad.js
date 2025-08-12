@@ -351,8 +351,14 @@ router.get("/getad/:carAdId", authenticate, queryBuilder, async (req, res) => {
         }
       },
       {
+        $set: {
+          can_edit: { $eq: ["$_id", new mongodb.ObjectId(req.user.id)] }
+        }
+      },
+      {
         $project: {
           _id: 0,
+          can_edit: 1,
           registeredCarAds: 1
         }
       },
@@ -369,11 +375,6 @@ router.get("/getad/:carAdId", authenticate, queryBuilder, async (req, res) => {
       {
         $project: {
           registeredCarAds: 0
-        }
-      },
-      {
-        $set: {
-          can_edit: { $eq: ["$_id", new mongodb.ObjectId(req.user.id)] }
         }
       }
     ];
@@ -447,8 +448,14 @@ router.get("/getAds", authenticate, queryBuilder, async (req, res) => {
         }
       },
       {
+        $set: {
+          can_edit: { $eq: ["$_id", new mongodb.ObjectId(req.user.id)] }
+        }
+      },
+      {
         $project: {
           _id: 0,
+          can_edit: 1,
           registeredCarAds: 1
         }
       },
