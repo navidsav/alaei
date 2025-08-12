@@ -53,7 +53,7 @@ const fileFilter = (req, file, cb) => {
 };
 
 const upload = multer({ storage, fileFilter });
-router.post("/add", authenticate, authorize("admin", "operator"), upload.array('images', 10), async (req, res) => {
+router.post("/add/:targetAdId", authenticate, authorize("admin", "operator"), upload.array('images', 10), async (req, res) => {
 
 
   try {
@@ -113,6 +113,7 @@ router.post("/add", authenticate, authorize("admin", "operator"), upload.array('
     ])
 
     let insertThis = {
+      _id: new mongodb.ObjectId(req.params.targetAdId),
       trim: { ...trim[0], trim_id },
       production_year: production_year,
 
@@ -158,7 +159,7 @@ router.post("/add", authenticate, authorize("admin", "operator"), upload.array('
 
       }
     }, {
-      upsert: false
+      upsert: true
     })
       .then((r) => {
         logger.debug({ message: "Car ads added successfully", reqbody: req.body });
