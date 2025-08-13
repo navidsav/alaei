@@ -6,6 +6,7 @@ const mongo = require('@intugine-technologies/mongodb');
 const mongodb = require("mongodb");
 const multer = require('multer');
 const { authenticate, authorize } = require("../middleware/auth")
+const { aggAdder } = require("../middleware/ad")
 
 const delivery_status = require("../../common/car/delivery_status");
 const body_status = require("../../common/car/body_status");
@@ -306,7 +307,7 @@ router.post("/verify", authenticate, authorize("admin", "operator"), upload.arra
 // ############################################
 // ############################################
 // ############################################
-router.get("/getad/:carAdId", authenticate, queryBuilder, async (req, res) => {
+router.get("/getad/:carAdId", authenticate, aggAdder, queryBuilder, async (req, res) => {
 
   try {
 
@@ -431,14 +432,14 @@ router.get("/getad/:carAdId", authenticate, queryBuilder, async (req, res) => {
 // ############################################
 // ############################################
 // ############################################
-router.get("/getAds", authenticate, queryBuilder, async (req, res) => {
+router.get("/getAds", authenticate, aggAdder, queryBuilder, async (req, res) => {
 
   try {
 
 
     console.log(" qqqqqqqqqqqq AGG: ", req.aggregation)
 
-    
+
     let { phoneNumber, name, payment } = req.query;
 
     payment = (payment == undefined) ? "" : payment

@@ -45,42 +45,11 @@ mongoose.connect(`${config.DB_URI}/${config.MOBILE_DB_NAME}?authSource=admin`, {
 
 
 
+
 app.use("/v2/user", authRoutes);
 app.use("/v2/constant", authenticate, constantRoutes)
 app.use("/v2/ads", adRoutes)
 app.use("/admin/v2/", authenticate, authorize("admin"), adminRoutes)
-
-app.use((req, res, next) => {
-
-
-  if (req.user && req.user.role && req.user.role.name != "admin") {
-    req.aggregation = [{
-      $match: {
-        "status.value": 100 // motasher shode
-      }
-    }]
-  }
-  else {
-    req.aggregation = []
-  }
-
-  // const oldJson = res.json;
-
-  // res.json = function (data) {
-  //   console.log(" ************ ", data)
-  //   console.log(" user : ", req.user)
-  //   // Ensure it's an object before modifying
-  //   if (typeof data === 'object' && data && data.returnObj && data.returnObj.ads) {
-  //     if (req.user.role.name != "admin") {
-  //       data.user = undefined;
-  //     }
-  //     // data.serverTime = new Date();
-  //   }
-  //   return oldJson.call(this, data);
-  // };
-
-  next();
-});
 
 
 
