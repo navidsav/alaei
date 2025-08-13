@@ -45,16 +45,18 @@ mongoose.connect(`${config.DB_URI}/${config.MOBILE_DB_NAME}?authSource=admin`, {
 
 
 app.use((req, res, next) => {
-  // This middleware executes before the response is sent
+  const oldJson = res.json;
 
-  res.on('finish', () => {
-    // This code executes AFTER the response has been sent
-    console.log('Response finished for:', req.originalUrl);
-    console.log('Res:', res);
-    // Perform logging, analytics, cleanup, etc.
-  });
+  res.json = function (data) {
+    console.log(" ************ ", data)
+    // Ensure it's an object before modifying
+    if (typeof data === 'object' && data !== null) {
+      data.serverTime = new Date();
+    }
+    return oldJson.call(this, data);
+  };
 
-  next(); // Pass control to the next middleware or route handler
+  next();
 });
 
 
