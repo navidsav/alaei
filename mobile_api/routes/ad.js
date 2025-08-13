@@ -480,9 +480,9 @@ router.get("/getAds", authenticate, aggAdder, queryBuilder, async (req, res) => 
       {
         $project: {
           registeredCarAds: 0,
-          user: req.userProjection
         }
       },
+      req.userProjection,
       req.statusAggregation
     ];
 

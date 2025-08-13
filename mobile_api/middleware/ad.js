@@ -8,7 +8,11 @@ const aggAdder = (req, res, next) => {
                 "status.value": 100 // motasher shode
             }
         };
-        req.userProjection = 0;
+        req.userProjection = {
+            $project: {
+                user: 0
+            }
+        };
     }
     else {
         req.statusAggregation = {
@@ -16,7 +20,11 @@ const aggAdder = (req, res, next) => {
                 s: 0
             }
         }
-        req.userProjection = 1;
+        req.userProjection = {
+            $project: {
+                ss: 0
+            }
+        };
 
     }
 
