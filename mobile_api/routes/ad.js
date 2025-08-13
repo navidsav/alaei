@@ -673,6 +673,50 @@ router.get("/deleteAd/:targetAdId", authenticate, queryBuilder, async (req, res)
 // ############################################
 // ############################################
 // ############################################
+router.get("/adRequest/:targetAdId", authenticate, queryBuilder, async (req, res) => {
+
+
+  let statues = await loadAdStatus();
+  db.update('users', {
+    "registeredCarAds._id": req.params.targetAdId
+  }, {
+    // $set: {
+    //   [`registeredCarAds.$.status`]: statues.find(o => o.value == req.params.targetStatus),
+    // },
+    $push: {
+      [`registeredCarAds.$.requests`]: {
+        $each: [{
+          buyer_request_id: req.user,
+          request_at: new Date()
+        }]
+      }
+
+    }
+  }, {
+    upsert: false
+  })
+    .then((r) => {
+      logger.debug({ message: "Car ads changed status successfully", reqbody: req.body });
+
+
+      return response_handler.okResponse(res, "Car Ads changed successfully", {})
+
+    })
+    .catch((e) => {
+      logger.error({ event: "Error in Car Ad changing status ", reqbody: req.body, error: e?.message });
+      return response_handler.errorResponse(res, "Error in Car Ad status", req.body)
+
+    });
+
+
+
+});
+
+
+
+// ############################################
+// ############################################
+// ############################################
 mongo(config.DB_URI, config.MOBILE_DB_NAME)
   .then(async (DB) => {
     db = DB;
