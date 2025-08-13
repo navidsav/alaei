@@ -196,7 +196,7 @@ mongo(config.DB_URI, config.MOBILE_DB_NAME)
 // ############################################
 // ############################################
 // ############################################
-router.get("/getAds", authenticate, authorize("admin"), queryBuilder, async (req, res) => {
+router.get("/getAdRequests", authenticate, authorize("admin"), queryBuilder, async (req, res) => {
 
   try {
 
@@ -223,7 +223,6 @@ router.get("/getAds", authenticate, authorize("admin"), queryBuilder, async (req
     //     }
 
     let aggregation = [
-
       {
         $unwind: {
           path: "$registeredCarAds"
@@ -231,30 +230,36 @@ router.get("/getAds", authenticate, authorize("admin"), queryBuilder, async (req
       },
       {
         $project: {
-          _id: 0,
           registeredCarAds: 1
         }
       },
+
       {
         $replaceRoot: {
-          newRoot: {
-            $mergeObjects: [
-              "$registeredCarAds",
-              "$$ROOT"
-            ]
-          }
+          newRoot: "$registeredCarAds"
+        }
+      },
+      {
+        $unwind: {
+          path: "$requests"
+        }
+      },
+      {
+        $sort: {
+          "requests.request_at": -1
+        }
+      },
+      {
+        $match: {
+          "requests.request_status.value": 0 // Dar entezar barresi
         }
       },
       {
         $project: {
-          registeredCarAds: 0
+          seller: "$user",
+          buyer: "$requests.buyer",
         }
-      },
-      // {
-      //   $match: {
-      //     "status.value": 0 // dar hale barresi
-      //   }
-      // }
+      }
     ];
 
     let total = -1;
@@ -278,10 +283,10 @@ router.get("/getAds", authenticate, authorize("admin"), queryBuilder, async (req
       });
     }
 
-    const ads = await db.aggregate("users", aggregation);
+    const adRequests = await db.aggregate("users", aggregation);
 
     // Respond with the car details
-    return responseHandler.okResponse(res, "here you are", { ads: ads, total: total[0] })
+    return responseHandler.okResponse(res, "here you are", { ad_requests: adRequests, total: total[0] })
   } catch (error) {
     logger.error({ event: "HTTP GET BRANDS ERROR ", error: error?.message })
     responseHandler.errorResponse(res, "Server error", error)
