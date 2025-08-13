@@ -677,6 +677,7 @@ router.get("/adRequest/:targetAdId", authenticate, queryBuilder, async (req, res
 
 
   let statues = await loadAdStatus();
+  let user = await User.findById(req.user.id);
   db.update('users', {
     "registeredCarAds._id": new mongodb.ObjectId(req.params.targetAdId)
   }, {
@@ -686,7 +687,12 @@ router.get("/adRequest/:targetAdId", authenticate, queryBuilder, async (req, res
     $push: {
       [`registeredCarAds.$.requests`]: {
         $each: [{
-          buyer_request_id: await User.findById(req.user.id),
+          buyer_request_id: {
+            id: new mongodb.ObjectId(req.user.id),
+            phoneNumber: user.phoneNumber,
+            firstName: user.firstName,
+            lastName: user.lastName,
+          },
           request_status: statues.find(o => o.value == 0),
           request_at: new Date()
         }]
