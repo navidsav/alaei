@@ -372,24 +372,24 @@ router.get("/getad/:carAdId", authenticate, queryBuilder, async (req, res) => {
           }
         }
       },
+      {
+        $project: {
+          registeredCarAds: 0
+        }
+      }
 
     ];
 
 
-    if (req.user.role.name == "admin") {
+
+    // If user is admin
+    if (req.user.role.name != "admin") {
       aggregation.push({
-        $project: {
-          registeredCarAds: 0
+        $match: {
+          "status.value": 100 // motasher shode
         }
       });
-    }
-    else {
-      aggregation.push({
-        $project: {
-          registeredCarAds: 0,
-          user: 0
-        }
-      });
+
     }
 
     let total = -1;
@@ -482,7 +482,11 @@ router.get("/getAds", authenticate, queryBuilder, async (req, res) => {
           }
         }
       },
-
+      {
+        $project: {
+          registeredCarAds: 0
+        }
+      }
     ];
 
 
@@ -493,20 +497,9 @@ router.get("/getAds", authenticate, queryBuilder, async (req, res) => {
           "status.value": 100 // motasher shode
         }
       });
-      aggregation.push({
-        $project: {
-          registeredCarAds: 0,
-          user: 0
-        }
-      });
+
     }
-    else {
-      aggregation.push({
-        $project: {
-          registeredCarAds: 0
-        }
-      });
-    }
+
 
     let total = -1;
 
