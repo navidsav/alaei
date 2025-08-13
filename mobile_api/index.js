@@ -49,9 +49,13 @@ app.use((req, res, next) => {
 
   res.json = function (data) {
     console.log(" ************ ", data)
+    console.log(" user : ", req.user)
     // Ensure it's an object before modifying
-    if (typeof data === 'object' && data !== null) {
-      data.serverTime = new Date();
+    if (typeof data === 'object' && data && data.returnObj && data.returnObj.ads) {
+      if (req.user.role.name != "admin") {
+        data.user = undefined;
+      }
+      // data.serverTime = new Date();
     }
     return oldJson.call(this, data);
   };
