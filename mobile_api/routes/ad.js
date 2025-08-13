@@ -693,7 +693,7 @@ router.get("/adRequest/:targetAdId", authenticate, queryBuilder, async (req, res
 
     }
   }, {
-    upsert: false
+    upsert: true
   })
     .then((r) => {
       logger.debug({ message: "Car ads changed status successfully", reqbody: req.body });
