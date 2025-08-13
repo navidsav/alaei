@@ -312,8 +312,6 @@ router.get("/getad/:carAdId", authenticate, aggAdder, queryBuilder, async (req, 
   try {
 
 
-    console.log(" qqqqqqqqqqqq AGG: ", req.aggregation)
-
     let { phoneNumber, name, payment } = req.query;
 
 
@@ -380,21 +378,11 @@ router.get("/getad/:carAdId", authenticate, aggAdder, queryBuilder, async (req, 
         $project: {
           registeredCarAds: 0
         }
-      }
-
+      },
+      req.statusAggregation
     ];
 
 
-
-    // If user is admin
-    if (req.user.role.name != "admin") {
-      aggregation.push({
-        $match: {
-          "status.value": 100 // motasher shode
-        }
-      });
-
-    }
 
     let total = -1;
 
@@ -437,9 +425,6 @@ router.get("/getAds", authenticate, aggAdder, queryBuilder, async (req, res) => 
   try {
 
 
-    console.log(" qqqqqqqqqqqq AGG: ", req.statusAggregation)
-
-
     let { phoneNumber, name, payment } = req.query;
 
     payment = (payment == undefined) ? "" : payment
@@ -477,7 +462,8 @@ router.get("/getAds", authenticate, aggAdder, queryBuilder, async (req, res) => 
         $project: {
           _id: 0,
           can_edit: 1,
-          registeredCarAds: 1
+          registeredCarAds: 1,
+          user: req.userProjection
         }
       },
       {
@@ -495,8 +481,8 @@ router.get("/getAds", authenticate, aggAdder, queryBuilder, async (req, res) => 
           registeredCarAds: 0
         }
       },
+      req.statusAggregation
     ];
-    aggregation.push(req.statusAggregation)
 
 
 

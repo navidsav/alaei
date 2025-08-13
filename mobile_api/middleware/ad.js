@@ -7,7 +7,8 @@ const aggAdder = (req, res, next) => {
             $match: {
                 "status.value": 100 // motasher shode
             }
-        }
+        };
+        req.userProjection = 0;
     }
     else {
         req.statusAggregation = {
@@ -15,6 +16,8 @@ const aggAdder = (req, res, next) => {
                 s: 0
             }
         }
+        req.userProjection = 1;
+
     }
 
     // const oldJson = res.json;
