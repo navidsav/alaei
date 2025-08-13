@@ -41,7 +41,7 @@ router.post("/generateReferralCode", authorize("admin", "operator"), async (req,
     return responseHandler.nokResponse(res, "Please select the role!", {})
 
 
-  if (agencies.findIndex(o => o.title == agencyCode) < 0)
+  if (agencies.findIndex(o => o.value == agencyCode) < 0)
     return responseHandler.nokResponse(res, "Please select the agency!", {})
 
 
@@ -82,7 +82,7 @@ router.post("/generateReferralCode", authorize("admin", "operator"), async (req,
 
   const code = generateCode({
     year: newCount[0].year,
-    agencyCode: agency.find(o => o.value == agencyCode).title,
+    agencyCode: agencies.find(o => o.value == agencyCode).title,
     cityName: cities.find(o => o.value == city).title, //get city name
     personIndex: count
   });
