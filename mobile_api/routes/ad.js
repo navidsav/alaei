@@ -449,8 +449,6 @@ router.get("/getAds", authenticate, aggAdder, queryBuilder, async (req, res) => 
     //     }
 
 
-    console.log(" userProjection : ", req.userProjection)
-    let showUser = req.userProjection;
     let aggregation = [
       {
         $unwind: {
@@ -467,7 +465,7 @@ router.get("/getAds", authenticate, aggAdder, queryBuilder, async (req, res) => 
           _id: 0,
           can_edit: 1,
           registeredCarAds: 1,
-          user: showUser
+          user: 0
         }
       },
       {
@@ -527,7 +525,7 @@ router.get("/getAds", authenticate, aggAdder, queryBuilder, async (req, res) => 
     // Respond with the car details
     return response_handler.okResponse(res, "here you are", { ads: ads, total: total[0] })
   } catch (error) {
-    logger.error({ event: "HTTP GET BRANDS ERROR ", error: error?.message })
+    logger.error({ event: "HTTP GET Ads ERROR ", error: error?.message })
     response_handler.errorResponse(res, "Server error", error)
   }
 });
