@@ -310,6 +310,9 @@ router.get("/getad/:carAdId", authenticate, queryBuilder, async (req, res) => {
 
   try {
 
+
+    console.log(" qqqqqqqqqqqq AGG: ", req.aggregation)
+
     let { phoneNumber, name, payment } = req.query;
 
 
