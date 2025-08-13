@@ -450,6 +450,7 @@ router.get("/getAds", authenticate, aggAdder, queryBuilder, async (req, res) => 
 
 
     console.log(" userProjection : ", req.userProjection)
+    let showUser = req.userProjection;
     let aggregation = [
       {
         $unwind: {
@@ -466,7 +467,7 @@ router.get("/getAds", authenticate, aggAdder, queryBuilder, async (req, res) => 
           _id: 0,
           can_edit: 1,
           registeredCarAds: 1,
-          user: 1
+          user: showUser
         }
       },
       {
