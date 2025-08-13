@@ -5,7 +5,7 @@ const { authenticate, authorize } = require("../middleware/auth");
 const responseHandler = require("./response_handler");
 const mongo = require('@intugine-technologies/mongodb');
 const mongodb = require("mongodb");
-const cities = require("../../common/admin/city")
+const cityModule = require("../../common/admin/city")
 const roles = require("../../common/admin/role")
 const queryBuilder = require("../../common/query")
 
@@ -30,6 +30,9 @@ router.post("/generateReferralCode", authorize("admin", "operator"), async (req,
 
   const { city, agencyCode, role } = req.body;
 
+  let agencies = await agency.loadAgencies();
+  let cities = await cityModule.loadCities();
+
   if (role == "admin" && req.user.role.name != "admin")
     return responseHandler.nokResponse(res, "You are not authorized!", {})
 
@@ -38,7 +41,7 @@ router.post("/generateReferralCode", authorize("admin", "operator"), async (req,
     return responseHandler.nokResponse(res, "Please select the role!", {})
 
 
-  if (agency.findIndex(o => o.value == agencyCode) < 0)
+  if (agencies.findIndex(o => o.value == agencyCode) < 0)
     return responseHandler.nokResponse(res, "Please select the agency!", {})
 
 
