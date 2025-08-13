@@ -47,7 +47,7 @@ mongoose.connect(`${config.DB_URI}/${config.MOBILE_DB_NAME}?authSource=admin`, {
 app.use((req, res, next) => {
 
 
-  if (req.user.role.name != "admin") {
+  if (req.user && req.user.role && req.user.role.name != "admin") {
     req.aggregation = [{
       $match: {
         "status.value": 100 // motasher shode
