@@ -48,6 +48,18 @@ app.use("/v2/user", authRoutes);
 app.use("/v2/constant", authenticate, constantRoutes)
 app.use("/v2/ads", adRoutes)
 app.use("/admin/v2/", authenticate, authorize("admin"), adminRoutes)
+app.use((req, res, next) => {
+  // This middleware executes before the response is sent
+
+  res.on('finish', () => {
+    // This code executes AFTER the response has been sent
+    console.log('Response finished for:', req.originalUrl);
+    console.log('Response finished for:', res.returnObj);
+    // Perform logging, analytics, cleanup, etc.
+  });
+
+  next(); // Pass control to the next middleware or route handler
+});
 
 
 
