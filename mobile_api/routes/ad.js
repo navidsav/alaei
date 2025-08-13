@@ -431,6 +431,7 @@ router.get("/getAds", authenticate, aggAdder, queryBuilder, async (req, res) => 
     name = (name == undefined) ? "" : name
     phoneNumber = (phoneNumber == undefined) ? "" : phoneNumber
 
+    console.log(" req ", req)
     // {
     //       $match: {
     //         "user.phoneNumber": { $regex: phoneNumber }
@@ -463,7 +464,7 @@ router.get("/getAds", authenticate, aggAdder, queryBuilder, async (req, res) => 
           _id: 0,
           can_edit: 1,
           registeredCarAds: 1,
-          user: req.userProjection
+          user: 1
         }
       },
       {
