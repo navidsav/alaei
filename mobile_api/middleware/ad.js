@@ -3,14 +3,14 @@
 const aggAdder = (req, res, next) => {
 
     if (req.user && req.user.role && req.user.role.name != "admin") {
-        req.aggregation = [{
+        req.statusAggregation = {
             $match: {
                 "status.value": 100 // motasher shode
             }
-        }]
+        }
     }
     else {
-        req.aggregation = []
+        req.statusAggregation = undefined
     }
 
     // const oldJson = res.json;
