@@ -435,6 +435,10 @@ router.get("/getAds", authenticate, queryBuilder, async (req, res) => {
 
   try {
 
+
+    console.log(" qqqqqqqqqqqq AGG: ", req.aggregation)
+
+    
     let { phoneNumber, name, payment } = req.query;
 
     payment = (payment == undefined) ? "" : payment
