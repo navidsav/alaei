@@ -41,7 +41,7 @@ router.post("/generateReferralCode", authorize("admin", "operator"), async (req,
     return responseHandler.nokResponse(res, "Please select the role!", {})
 
 
-  if (agencies.findIndex(o => o.value == agencyCode) < 0)
+  if (agencies.findIndex(o => o.title == agencyCode) < 0)
     return responseHandler.nokResponse(res, "Please select the agency!", {})
 
 
