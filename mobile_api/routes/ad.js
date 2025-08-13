@@ -687,7 +687,7 @@ router.get("/adRequest/:targetAdId", authenticate, queryBuilder, async (req, res
     $push: {
       [`registeredCarAds.$.requests`]: {
         $each: [{
-          buyer_request_id: {
+          buyer: {
             id: new mongodb.ObjectId(req.user.id),
             phoneNumber: user.phoneNumber,
             firstName: user.firstName,
