@@ -10,7 +10,11 @@ const aggAdder = (req, res, next) => {
         }
     }
     else {
-        req.statusAggregation = {}
+        req.statusAggregation = {
+            $project: {
+                s: 0
+            }
+        }
     }
 
     // const oldJson = res.json;
