@@ -26,9 +26,13 @@ const agency = require("../../common/admin/agency");
 // ############################################
 // ############################################
 
-router.post("/generateReferralCode", async (req, res) => {
+router.post("/generateReferralCode", authorize("admin", "operator"), async (req, res) => {
 
   const { city, agencyCode, role } = req.body;
+
+  if (role == "admin" && req.user.role.name != "admin")
+    return responseHandler.nokResponse(res, "You are not authorized!", {})
+
 
   if (!role)
     return responseHandler.nokResponse(res, "Please select the role!", {})
@@ -80,6 +84,7 @@ router.post("/generateReferralCode", async (req, res) => {
     personIndex: count
   });
 
+  let user = await User.findById(req.user.id);
   let ref_code = await db.update(
     'referral_code',
     { code: code }, // match by unique code
@@ -87,7 +92,14 @@ router.post("/generateReferralCode", async (req, res) => {
       $set: {
         code: code,
         role: role,
-        updatedAt: new Date()
+        updatedAt: new Date(),
+        owner: {
+          id: new mongodb.ObjectId(req.user.id),
+          phoneNumber: user.phoneNumber,
+          username: user.username,
+          firstName: user.firstName,
+          lastName: user.lastName
+        }
       }
     },
     {
@@ -105,11 +117,11 @@ router.post("/generateReferralCode", async (req, res) => {
 // ############################################
 // ############################################
 // ############################################
-router.get("/getCodes", queryBuilder, async (req, res) => {
+router.get("/getCodes", authorize("admin", "operator"), queryBuilder, async (req, res) => {
 
   try {
 
-    const not_used_codes = await db.aggregate("referral_code", [
+    notUsedCodesAgg = [
       {
         $lookup: {
           from: "users",
@@ -133,9 +145,21 @@ router.get("/getCodes", queryBuilder, async (req, res) => {
         $sort: {
           _id: -1
         }
-      }]);
+      }];
 
-    const used_codes = await db.aggregate("users", [
+    if (req.user.role.name != "admin") {
+      notUsedCodesAgg.push({
+        $match: {
+          "owner.id": new mongodb.ObjectId(req.user.id)
+        }
+      });
+    }
+
+
+    const not_used_codes = await db.aggregate("referral_code", notUsedCodesAgg);
+
+
+    let usedCodesAgg = [
       {
         $match: {
           referralCode: { $ne: null }
@@ -156,7 +180,22 @@ router.get("/getCodes", queryBuilder, async (req, res) => {
           _id: -1
         }
       }
-    ])
+    ];
+
+
+    if (req.user.role.name != "admin") {
+      usedCodesAgg.push({
+        $match: {
+          "owner.id": new mongodb.ObjectId(req.user.id)
+        }
+      });
+    }
+
+
+    const used_codes = await db.aggregate("users", usedCodesAgg)
+
+
+
 
 
     return responseHandler.okResponse(res, "Here you are!", {

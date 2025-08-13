@@ -49,7 +49,7 @@ mongoose.connect(`${config.DB_URI}/${config.MOBILE_DB_NAME}?authSource=admin`, {
 app.use("/v2/user", authRoutes);
 app.use("/v2/constant", authenticate, constantRoutes)
 app.use("/v2/ads", adRoutes)
-app.use("/admin/v2/", authenticate, authorize("admin"), adminRoutes)
+app.use("/admin/v2/", authenticate, adminRoutes)
 
 
 
