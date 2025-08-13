@@ -465,7 +465,6 @@ router.get("/getAds", authenticate, aggAdder, queryBuilder, async (req, res) => 
           _id: 0,
           can_edit: 1,
           registeredCarAds: 1,
-          user: 0
         }
       },
       {
@@ -480,7 +479,8 @@ router.get("/getAds", authenticate, aggAdder, queryBuilder, async (req, res) => 
       },
       {
         $project: {
-          registeredCarAds: 0
+          registeredCarAds: 0,
+          user: req.userProjection
         }
       },
       req.statusAggregation
