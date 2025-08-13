@@ -699,7 +699,7 @@ router.get("/adRequest/:targetAdId", authenticate, queryBuilder, async (req, res
       logger.debug({ message: "Car ads changed status successfully", reqbody: req.body });
 
 
-      return response_handler.okResponse(res, "Car Ads changed successfully", {})
+      return response_handler.okResponse(res, "Car Ads changed successfully", { result: r })
 
     })
     .catch((e) => {
