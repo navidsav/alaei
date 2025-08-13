@@ -448,6 +448,8 @@ router.get("/getAds", authenticate, aggAdder, queryBuilder, async (req, res) => 
     //       }
     //     }
 
+
+    console.log(" userProjection : ", req.userProjection)
     let aggregation = [
       {
         $unwind: {
