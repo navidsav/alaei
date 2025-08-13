@@ -50,7 +50,7 @@ app.use((req, res, next) => {
   res.on('finish', () => {
     // This code executes AFTER the response has been sent
     console.log('Response finished for:', req.originalUrl);
-    console.log('Response finished for:', res.returnObj);
+    console.log('Res:', res);
     // Perform logging, analytics, cleanup, etc.
   });
 
