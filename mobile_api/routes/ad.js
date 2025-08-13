@@ -678,7 +678,7 @@ router.get("/adRequest/:targetAdId", authenticate, queryBuilder, async (req, res
 
   let statues = await loadAdStatus();
   db.update('users', {
-    "registeredCarAds._id": req.params.targetAdId
+    "registeredCarAds._id": new mongodb.ObjectId(req.params.targetAdId)
   }, {
     // $set: {
     //   [`registeredCarAds.$.status`]: statues.find(o => o.value == req.params.targetStatus),
