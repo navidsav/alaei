@@ -44,10 +44,6 @@ mongoose.connect(`${config.DB_URI}/${config.MOBILE_DB_NAME}?authSource=admin`, {
   .catch(err => console.log(err));
 
 
-app.use("/v2/user", authRoutes);
-app.use("/v2/constant", authenticate, constantRoutes)
-app.use("/v2/ads", adRoutes)
-app.use("/admin/v2/", authenticate, authorize("admin"), adminRoutes)
 app.use((req, res, next) => {
   // This middleware executes before the response is sent
 
@@ -60,6 +56,12 @@ app.use((req, res, next) => {
 
   next(); // Pass control to the next middleware or route handler
 });
+
+
+app.use("/v2/user", authRoutes);
+app.use("/v2/constant", authenticate, constantRoutes)
+app.use("/v2/ads", adRoutes)
+app.use("/admin/v2/", authenticate, authorize("admin"), adminRoutes)
 
 
 
