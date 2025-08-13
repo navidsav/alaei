@@ -687,6 +687,7 @@ router.get("/adRequest/:targetAdId", authenticate, queryBuilder, async (req, res
       [`registeredCarAds.$.requests`]: {
         $each: [{
           buyer_request_id: req.user,
+          request_status: statues.find(o => o.value = 0),
           request_at: new Date()
         }]
       }
@@ -696,10 +697,9 @@ router.get("/adRequest/:targetAdId", authenticate, queryBuilder, async (req, res
     upsert: true
   })
     .then((r) => {
-      logger.debug({ message: "Car ads changed status successfully", reqbody: req.body });
+      logger.debug({ message: "Ad request registered successfully", result: r });
 
-
-      return response_handler.okResponse(res, "Car Ads changed successfully", { result: r })
+      return response_handler.okResponse(res, "Ad request registered successfully", { result: r })
 
     })
     .catch((e) => {
