@@ -496,8 +496,8 @@ router.get("/getAds", authenticate, aggAdder, queryBuilder, async (req, res) => 
         }
       },
     ];
-    let statusAgg = req.statusAggregation;
-    aggregation = { ...aggregation, statusAgg }
+    aggregation.push(req.statusAggregation)
+
 
 
     // // If user is admin
