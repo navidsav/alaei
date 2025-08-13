@@ -687,7 +687,7 @@ router.get("/adRequest/:targetAdId", authenticate, queryBuilder, async (req, res
       [`registeredCarAds.$.requests`]: {
         $each: [{
           buyer_request_id: req.user,
-          request_status: statues.find(o => o.value = 0),
+          request_status: statues.find(o => o.value == 0),
           request_at: new Date()
         }]
       }
