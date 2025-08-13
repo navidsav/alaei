@@ -422,7 +422,7 @@ router.get("/getStatuses", async (req, res) => {
 // ############################################
 router.get("/getCities", async (req, res) => {
 
-  return response_handler.okResponse(res, "Here your are", cities);
+  return response_handler.okResponse(res, "Here your are", await cities.loadCities());
 
 })
 
@@ -432,7 +432,7 @@ router.get("/getCities", async (req, res) => {
 // ############################################
 router.get("/getAgencies", async (req, res) => {
 
-  return response_handler.okResponse(res, "Here your are", agencies);
+  return response_handler.okResponse(res, "Here your are", await agencies.loadAgencies());
 
 })
 
