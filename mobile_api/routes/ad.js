@@ -408,7 +408,7 @@ router.get("/getad/:carAdId", authenticate, aggAdder, queryBuilder, async (req, 
     const ads = await db.aggregate("users", aggregation);
 
     // Respond with the car details
-    return response_handler.okResponse(res, "here you are", { ads: ads, total: total[0] })
+    return response_handler.okResponse(res, "here you are", { ads: ads, total: total ? total[0].total : 0 })
   } catch (error) {
     logger.error({ event: "HTTP GET BRANDS ERROR ", error: error?.message })
     response_handler.errorResponse(res, "Server error", error)
@@ -523,7 +523,7 @@ router.get("/getAds", authenticate, aggAdder, queryBuilder, async (req, res) => 
     const ads = await db.aggregate("users", aggregation);
 
     // Respond with the car details
-    return response_handler.okResponse(res, "here you are", { ads: ads, total: total[0] })
+    return response_handler.okResponse(res, "here you are", { ads: ads, total: total ? total[0].total : 0 })
   } catch (error) {
     logger.error({ event: "HTTP GET Ads ERROR ", error: error?.message })
     response_handler.errorResponse(res, "Server error", error)

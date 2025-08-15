@@ -329,7 +329,7 @@ router.get("/getAdRequests", authenticate, authorize("admin"), queryBuilder, asy
     const adRequests = await db.aggregate("users", aggregation);
 
     // Respond with the car details
-    return responseHandler.okResponse(res, "here you are", { ad_requests: adRequests, total: total[0] })
+    return responseHandler.okResponse(res, "here you are", { ad_requests: adRequests, total: total ? total[0].total : 0 })
   } catch (error) {
     logger.error({ event: "HTTP GET BRANDS ERROR ", error: error?.message })
     responseHandler.errorResponse(res, "Server error", error)
