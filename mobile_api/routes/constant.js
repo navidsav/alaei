@@ -100,7 +100,7 @@ router.get("/getbrands", queryBuilder, async (req, res) => {
     const brands = await db.aggregate("carbrands", aggregation);
 
     // Respond with the car details
-    return response_handler.okResponse(res, "here you are", { brands: brands, total: total ? total[0].total : 0, data_len: datalen ? datalen[0].data_len : 0 })
+    return response_handler.okResponse(res, "here you are", { brands: brands, tt: total, total: 0, data_len: datalen ? datalen[0].data_len : 0 })
   } catch (error) {
     logger.error({ event: "HTTP GET BRANDS ERROR ", error: error?.message })
     response_handler.errorResponse(res, "Server error", error)
@@ -197,7 +197,7 @@ router.get("/getModelsByBrand/:brand", queryBuilder, async (req, res) => {
     const models = await db.aggregate("carbrands", aggregation);
 
     // Respond with the car details
-    return response_handler.okResponse(res, "here you are", { models: models, tt: total, total: 0, data_len: datalen ? datalen[0].data_len : 0 })
+    return response_handler.okResponse(res, "here you are", { models: models, total: total ? total[0].total : 0, data_len: datalen ? datalen[0].data_len : 0 })
   } catch (error) {
     logger.error({ event: "HTTP GET BRANDS ERROR ", error: error?.message })
     response_handler.errorResponse(res, "Server error", error)
