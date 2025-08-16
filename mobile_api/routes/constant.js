@@ -76,13 +76,13 @@ router.get("/getbrands", queryBuilder, async (req, res) => {
     total = await db.aggregate("carbrands", totalAgg);
 
 
-    if (!filter && req.mongoQuery.skip) {
+    if (!brand && req.mongoQuery.skip) {
 
       aggregation.push({
         $skip: req.mongoQuery.skip
       });
     }
-    if (!filter && req.mongoQuery.limit) {
+    if (!brand && req.mongoQuery.limit) {
       aggregation.push({
         $limit: req.mongoQuery.limit
       });
