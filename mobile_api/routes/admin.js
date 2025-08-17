@@ -206,7 +206,7 @@ router.get("/getCodes", authorize("admin", "operator"), queryBuilder, async (req
     }
 
 
-    const used_codes = await db.aggregate("users", usedCodesAgg)
+    const used_codes = await db.aggregate("referral_code", usedCodesAgg)
 
 
 
