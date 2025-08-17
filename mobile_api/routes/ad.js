@@ -157,16 +157,14 @@ router.post("/add/:targetAdId?", authenticate, authorize("admin", "operator"), u
       let settingsProps = {}
       updatingProps.forEach(propName => {
         if (propName.indexOf("image") < 0)
-          settingsProps[propName] = updatingAd.propName
+          settingsProps[`registeredCarAds.$.${propName}`] = updatingAd[propName]
       });
       console.log(" ================= settingsProps : ", settingsProps)
       db.update('users', {
         _id: new mongodb.ObjectId(req.user.id),
         "registeredCarAds._id": new mongodb.ObjectId(req.params.targetAdId),
       }, {
-        $set: {
-          [`registeredCarAds.$`]: settingsProps,
-        },
+        $set: settingsProps,
         // $push: {
         //   [`registeredCarAds`]: {
         //     $each: [insertThis]
