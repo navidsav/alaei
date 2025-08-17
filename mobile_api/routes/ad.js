@@ -77,11 +77,10 @@ router.post("/add/:targetAdId?", authenticate, authorize("admin", "operator"), u
     } = req.body;
 
 
-    if (!req.files || req.files.length === 0) {
+    if (!req.params.targetAdId && (!req.files || req.files.length === 0)) {
       return res.status(400).json({ error: 'هیچ تصویری ارسال نشده است' });
     }
 
-    const imageUrls = req.files.map(file => `${config.CDN_URL}/alaei/uploads/${file.filename}`);
 
 
     let statuses = await loadAdStatus();
@@ -128,8 +127,6 @@ router.post("/add/:targetAdId?", authenticate, authorize("admin", "operator"), u
       installment_month: installment_month.find(o => o.value == installment_month_value),
       installment_delivery: installment_delivery.find(o => o.value == installment_delivery_days_value),
 
-      imageUrls: imageUrls,
-
 
       user: {
         username: user.username,
@@ -145,8 +142,16 @@ router.post("/add/:targetAdId?", authenticate, authorize("admin", "operator"), u
     };
 
 
+
+
     if (req.params.targetAdId) {
       let updatingAd = { ...insertThis, _id: new mongodb.ObjectId(req.params.targetAdId) }
+
+      if (req.files.length > 0) {
+        const imageUrls = req.files.map(file => `${config.CDN_URL}/alaei/uploads/${file.filename}`);
+
+        updatingAd.imageUrls = imageUrls
+      }
 
       db.update('users', {
         _id: new mongodb.ObjectId(req.user.id),
@@ -183,6 +188,13 @@ router.post("/add/:targetAdId?", authenticate, authorize("admin", "operator"), u
 
 
     } else {
+
+      if (req.files.length > 0) {
+        const imageUrls = req.files.map(file => `${config.CDN_URL}/alaei/uploads/${file.filename}`);
+
+        insertThis.imageUrls = imageUrls
+      }
+
       db.update('users', {
         _id: new mongodb.ObjectId(req.user.id),
       }, {
