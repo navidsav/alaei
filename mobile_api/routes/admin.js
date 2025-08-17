@@ -191,7 +191,8 @@ router.get("/getCodes", authorize("admin", "operator"), queryBuilder, async (req
           lastName: 1,
           referralCode: 1,
           role: 1,
-          owner: 1
+          owner: 1,
+          updatedAt: 1
         }
       }
     ];
