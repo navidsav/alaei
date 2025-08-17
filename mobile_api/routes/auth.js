@@ -193,7 +193,7 @@ router.post("/register", async (req, res) => {
       user.password = hashedPassword
       user.referralCode = referralCode[0].code
       user.role = {
-        name: referralCode[0].role
+        name: referralCode[0].role.toLowerCase()
       }
       user.salt = salt
       user.status = 'complete'

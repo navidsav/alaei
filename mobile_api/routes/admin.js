@@ -94,7 +94,7 @@ router.post("/generateReferralCode", authorize("admin", "operator"), async (req,
     {
       $set: {
         code: code,
-        role: role,
+        role: role.toLowerCase(),
         updatedAt: new Date(),
         owner: {
           id: new mongodb.ObjectId(req.user.id),
@@ -164,8 +164,23 @@ router.get("/getCodes", authorize("admin", "operator"), queryBuilder, async (req
 
     let usedCodesAgg = [
       {
-        $match: {
-          referralCode: { $ne: null }
+        $lookup: {
+          from: "users",
+          localField: "code",
+          foreignField: "referralCode",
+          as: "users"
+        }
+      },
+      {
+        $unwind: {
+          path: "$users"
+        }
+      },
+      {
+        $replaceRoot: {
+          newRoot: {
+            $mergeObjects: ["$users", "$$ROOT"]
+          }
         }
       },
       {
@@ -175,12 +190,8 @@ router.get("/getCodes", authorize("admin", "operator"), queryBuilder, async (req
           firstName: 1,
           lastName: 1,
           referralCode: 1,
-          role: 1
-        }
-      },
-      {
-        $sort: {
-          _id: -1
+          role: 1,
+          owner: 1
         }
       }
     ];
@@ -329,7 +340,7 @@ router.get("/getAdRequests", authenticate, authorize("admin"), queryBuilder, asy
     const adRequests = await db.aggregate("users", aggregation);
 
     // Respond with the car details
-    return responseHandler.okResponse(res, "here you are", { ad_requests: adRequests, total: total.length > 0  ? total[0].total : 0 })
+    return responseHandler.okResponse(res, "here you are", { ad_requests: adRequests, total: total.length > 0 ? total[0].total : 0 })
   } catch (error) {
     logger.error({ event: "HTTP GET BRANDS ERROR ", error: error?.message })
     responseHandler.errorResponse(res, "Server error", error)

@@ -9,7 +9,11 @@ const { authenticate, authorize } = require("../middleware/auth")
 const { aggAdder } = require("../middleware/ad")
 
 const delivery_status = require("../../common/car/delivery_status");
-const body_status = require("../../common/car/body_status");
+const { loadBodyStatus } = require("../../common/car/body_status");
+let body_status = [];
+(async () => {
+  body_status = await loadBodyStatus()
+})();
 const colors = require("../../common/car/colors");
 const colors_interior = require("../../common/car/colors_interior");
 const installment_number = require("../../common/car/installment_number");
