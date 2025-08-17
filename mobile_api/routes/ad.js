@@ -73,6 +73,8 @@ router.post("/add/:targetAdId?", authenticate, authorize("admin", "operator"), u
       body_status_value,
       payment_type_value,
       payment_total_price,
+      installment_prepaid1,
+      installment_prepaid2,
       installment_number_value,
       installment_delivery_days_value,
       installment_month_value,
@@ -130,7 +132,8 @@ router.post("/add/:targetAdId?", authenticate, authorize("admin", "operator"), u
       installment_number: installment_number.find(o => o.value == installment_number_value),
       installment_month: installment_month.find(o => o.value == installment_month_value),
       installment_delivery: installment_delivery.find(o => o.value == installment_delivery_days_value),
-
+      installment_prepaid1: installment_prepaid1,
+      installment_prepaid2: installment_prepaid2,
 
       user: {
         username: user.username,
@@ -263,6 +266,8 @@ router.post("/verify", authenticate, authorize("admin", "operator"), upload.arra
       body_status_value,
       payment_type_value,
       payment_total_price,
+      installment_prepaid1,
+      installment_prepaid2,
       installment_number_value,
       installment_delivery_days_value,
       installment_month_value,
@@ -311,6 +316,8 @@ router.post("/verify", authenticate, authorize("admin", "operator"), upload.arra
       body_status: body_status.find(o => o.value == body_status_value),
       payment_type: payment_type.find(o => o.value == payment_type_value),
       payment_total_price: payment_total_price,
+      installment_prepaid1: installment_prepaid1,
+      installment_prepaid2: installment_prepaid2,
       installment_number: installment_number.find(o => o.value == installment_number_value),
       installment_month: installment_month.find(o => o.value == installment_month_value),
       installment_delivery: installment_delivery.find(o => o.value == installment_delivery_days_value),
