@@ -485,7 +485,7 @@ router.get("/getAds", authenticate, aggAdder, queryBuilder, async (req, res) => 
       req.statusAggregation,
       {
         $sort: {
-          _id: -1
+          updatedAt: -1
         }
       }
     ];
