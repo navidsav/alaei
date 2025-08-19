@@ -381,6 +381,7 @@ router.get("/getad/:carAdId", authenticate, aggAdder, queryBuilder, async (req, 
           path: "$registeredCarAds"
         }
       },
+      req.statusAggregation,
       {
         $match: {
           "registeredCarAds._id": carId
@@ -413,7 +414,6 @@ router.get("/getad/:carAdId", authenticate, aggAdder, queryBuilder, async (req, 
           registeredCarAds: 0
         }
       },
-      req.statusAggregation
     ];
 
 
@@ -488,6 +488,7 @@ router.get("/getAds", authenticate, aggAdder, queryBuilder, async (req, res) => 
           path: "$registeredCarAds"
         }
       },
+      req.statusAggregation,
       {
         $set: {
           can_edit: { $eq: ["$_id", new mongodb.ObjectId(req.user.id)] }
@@ -516,7 +517,6 @@ router.get("/getAds", authenticate, aggAdder, queryBuilder, async (req, res) => 
         }
       },
       req.userProjection,
-      req.statusAggregation,
       {
         $sort: {
           updatedAt: -1

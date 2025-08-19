@@ -1,4 +1,4 @@
-
+const mongodb = require("mongodb");
 
 const aggAdder = (req, res, next) => {
 
@@ -10,7 +10,7 @@ const aggAdder = (req, res, next) => {
                         "status.value": 100 // motasher shode
                     },
                     {
-                        "_id": req.user.id
+                        "_id": new mongodb.ObjectId(req.user.id)
                     }
                 ]
             }
