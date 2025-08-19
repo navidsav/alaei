@@ -7,7 +7,7 @@ const aggAdder = (req, res, next) => {
             $match: {
                 $or: [
                     {
-                        "status.value": 100 // motasher shode
+                        "registeredCarAds.status.value": 100 // motasher shode
                     },
                     {
                         "_id": new mongodb.ObjectId(req.user.id)
