@@ -348,10 +348,10 @@ router.post("/login", async (req, res) => {
     const maxAge = 31536000000;
     res.cookie('token', token, {
       httpOnly: true,       // Helps prevent XSS
-      secure: false,         // Use true if using HTTPS
+      secure: true,         // Use true if using HTTPS
       sameSite: 'None',   // or 'Lax' or 'None' (use 'None' if cross-site)
       maxAge: maxAge,       // 1 year in ms
-      // domain: "localhost"
+      domain: ".autoalaei.ir"
     });
 
     redis_client.set(`online:${user._id}`, token, 'EX', maxAge); // 1-hour expiry
