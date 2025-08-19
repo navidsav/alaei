@@ -250,7 +250,7 @@ router.post("/add/:targetAdId?", authenticate, authorize("admin", "operator"), u
 
 
 
-router.post("/verify", authenticate, authorize("admin", "operator"), upload.array("images", 1), async (req, res) => {
+router.post("/verify", authenticate, authorize("admin", "operator"), upload.array("images", 10), async (req, res) => {
 
 
 
