@@ -124,7 +124,7 @@ router.post("/add/:targetAdId?", authenticate, authorize("admin", "operator"), u
       production_year: production_year,
 
       delivery_status_type: delivery_status.delivery_type.find(o => o.value == delivery_status_type),
-      delivery_havele_type: delivery_status.havale_type.find(o => o.value == delivery_status_value),
+      delivery_havale_type: delivery_status.havale_type.find(o => o.value == delivery_status_value),
       delivery_status_value: delivery_status_value,
       body_color: colors.find(o => o.value == body_color_value),
       interior_color: colors_interior.find(o => o.value == interior_color_value),
@@ -314,7 +314,7 @@ router.post("/verify", authenticate, authorize("admin", "operator"), upload.arra
       // bb: req.body,
       production_year: production_year,
       delivery_status_type: delivery_status.delivery_type.find(o => o.value == delivery_status_type),
-      delivery_havele_type: delivery_status.havale_type.find(o => o.value == delivery_status_value),
+      delivery_havale_type: delivery_status.havale_type.find(o => o.value == delivery_status_value),
       delivery_status_value: delivery_status_value,
       body_color: colors.find(o => o.value == body_color_value),
       interior_color: colors_interior.find(o => o.value == interior_color_value),
