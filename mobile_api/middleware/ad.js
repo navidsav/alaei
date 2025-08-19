@@ -5,7 +5,14 @@ const aggAdder = (req, res, next) => {
     if (req.user && req.user.role && req.user.role.name != "admin") {
         req.statusAggregation = {
             $match: {
-                "status.value": 100 // motasher shode
+                $or: [
+                    {
+                        "status.value": 100 // motasher shode
+                    },
+                    {
+                        "_id": req.user.id
+                    }
+                ]
             }
         };
         req.userProjection = {
