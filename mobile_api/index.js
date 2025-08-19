@@ -18,6 +18,7 @@ app.use(cookieParser());
 
 
 const allowedOrigins = [
+  'http://localhost:3000',
   'https://auto-gallery-hazel.vercel.app',
   'https://panel.autoalaei.ir'
 ];
