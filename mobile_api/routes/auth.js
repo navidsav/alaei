@@ -546,7 +546,13 @@ router.post("/ForgotPassWord", async (req, res) => {
 
 router.delete('/logout', authenticate, async (req, res) => {
   const isOnline = await redis_client.del(`online:${req.user.id}`);
-  res.clearCookie('token', { httpOnly: true, secure: true, sameSite: 'None' });
+  // Clear the cookie
+  res.clearCookie("token", {
+    httpOnly: true,
+    secure: true,
+    sameSite: "None",
+    domain: ".autoalaei.ir",  // must match the cookie you set on login
+  });
 
   return responseHandler.okResponse(res, 'Logged out', {});
 });
