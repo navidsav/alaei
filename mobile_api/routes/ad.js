@@ -454,6 +454,128 @@ router.get("/getad/:carAdId", authenticate, aggAdder, queryBuilder, async (req, 
 // ############################################
 // ############################################
 // ############################################
+router.get("/getMyAds", authenticate, aggAdder, queryBuilder, async (req, res) => {
+
+  try {
+
+
+    let { phoneNumber, name, payment } = req.query;
+
+    payment = (payment == undefined) ? "" : payment
+    name = (name == undefined) ? "" : name
+    phoneNumber = (phoneNumber == undefined) ? "" : phoneNumber
+
+    // {
+    //       $match: {
+    //         "user.phoneNumber": { $regex: phoneNumber }
+    //       }
+    //     },
+    //     {
+    //       $match: {
+    //         "user.name": { $regex: name }
+    //       }
+    //     },
+    //     {
+    //       $match: {
+    //         "payment_type.text": { $regex: payment }
+    //       }
+    //     }
+
+
+    let aggregation = [
+      {
+        $unwind: {
+          path: "$registeredCarAds"
+        }
+      },
+      req.statusAggregation,
+      {
+        $set: {
+          can_edit: { $eq: ["$_id", new mongodb.ObjectId(req.user.id)] }
+        }
+      },
+      {
+        $match: {
+          _id: new mongodb.ObjectId(req.user.id)
+        }
+      },
+      {
+        $project: {
+          _id: 0,
+          can_edit: 1,
+          registeredCarAds: 1,
+        }
+      },
+      {
+        $replaceRoot: {
+          newRoot: {
+            $mergeObjects: [
+              "$registeredCarAds",
+              "$$ROOT"
+            ]
+          }
+        }
+      },
+      {
+        $project: {
+          registeredCarAds: 0,
+        }
+      },
+      req.userProjection,
+      {
+        $sort: {
+          updatedAt: -1
+        }
+      }
+    ];
+
+
+
+    // // If user is admin
+    // if (req.user.role.name != "admin") {
+    //   aggregation.push({
+    //     $match: {
+    //       "status.value": 100 // motasher shode
+    //     }
+    //   });
+
+    // }
+
+
+    let total = -1;
+
+    let totalAgg = [...aggregation, {
+      $count: "total"
+    }]
+
+    total = await db.aggregate("users", totalAgg);
+
+
+    if (req.mongoQuery.skip) {
+
+      aggregation.push({
+        $skip: req.mongoQuery.skip
+      });
+    }
+    if (req.mongoQuery.limit) {
+      aggregation.push({
+        $limit: req.mongoQuery.limit
+      });
+    }
+
+    const ads = await db.aggregate("users", aggregation);
+
+    // Respond with the car details
+    return response_handler.okResponse(res, "here you are", { ads: ads, total: total.length > 0 ? total[0].total : 0 })
+  } catch (error) {
+    logger.error({ event: "HTTP GET Ads ERROR ", error: error?.message })
+    response_handler.errorResponse(res, "Server error", error)
+  }
+});
+
+// ############################################
+// ############################################
+// ############################################
 router.get("/getAds", authenticate, aggAdder, queryBuilder, async (req, res) => {
 
   try {
