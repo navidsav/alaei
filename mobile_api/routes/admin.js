@@ -9,8 +9,6 @@ const cityModule = require("../../common/admin/city")
 const roles = require("../../common/admin/role")
 const queryBuilder = require("../../common/query")
 
-
-
 const logger = require("../../common/logger")
 const config = require("../../config.json");
 let db = {};
@@ -21,11 +19,9 @@ const generateCode = require("../../common/code_generator");
 const agency = require("../../common/admin/agency");
 
 
-
 // ############################################
 // ############################################
 // ############################################
-
 router.post("/generateReferralCode", authorize("admin", "operator"), async (req, res) => {
 
   const { city, agencyCode, role } = req.body;
@@ -115,6 +111,66 @@ router.post("/generateReferralCode", authorize("admin", "operator"), async (req,
   return responseHandler.okResponse(res, "Code generated", { code: code, role: role })
 
 })
+
+
+
+// ############################################
+// ############################################
+// ############################################
+router.post("/getNetwork/:userID", authorize("admin", "operator"), async (req, res) => {
+
+
+  let userId = req.params.userID;
+
+  try {
+
+    if (req.user.role.name != "admin") {
+      userId = req.user.id;
+    }
+
+
+    let aggregation = [
+      {
+        $lookup: {
+          from: "referral_code",
+          localField: "referralCode",
+          foreignField: "code",
+          as: "ref_info"
+        }
+      },
+      { $unwind: "$ref_info" },
+      {
+        $addFields: {
+          referredBy: "$ref_info.owner"
+        }
+      },
+      {
+        $match: {
+          "referredBy.id": new mongodb.ObjectId(userId)
+        }
+      }
+
+    ];
+
+
+    const users = await db.aggregate("users", aggregation);
+
+    let referredBy = {};
+    if (users.length > 0) {
+      referredBy = users[0].referredBy;
+    }
+
+    // Respond with the car details
+    return responseHandler.okResponse(res, "here you are", { referredUsers: users, referredBy: referredBy })
+
+  }
+  catch (error) {
+    logger.error({ event: "HTTP GET BRANDS ERROR ", error: error?.message })
+    return responseHandler.errorResponse(res, "Server error", { error: error?.message })
+  }
+
+})
+
 
 
 // ############################################
@@ -228,24 +284,6 @@ router.get("/getCodes", authorize("admin", "operator"), queryBuilder, async (req
 
 
 
-mongo(config.DB_URI, config.MOBILE_DB_NAME)
-  .then(async (DB) => {
-    db = DB;
-
-
-
-
-
-
-
-
-  })
-  .catch((e) => {
-    logger.error({ event: 'ERROR CONNECTING TO MOBILE_DB_NAME', err: e?.message })
-
-  });
-
-
 
 // ############################################
 // ############################################
@@ -347,6 +385,27 @@ router.get("/getAdRequests", authenticate, authorize("admin"), queryBuilder, asy
     responseHandler.errorResponse(res, "Server error", error)
   }
 });
+
+
+
+
+mongo(config.DB_URI, config.MOBILE_DB_NAME)
+  .then(async (DB) => {
+    db = DB;
+
+
+
+
+
+
+
+
+  })
+  .catch((e) => {
+    logger.error({ event: 'ERROR CONNECTING TO MOBILE_DB_NAME', err: e?.message })
+
+  });
+
 
 
 module.exports = router;
