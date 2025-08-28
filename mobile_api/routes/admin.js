@@ -117,7 +117,7 @@ router.post("/generateReferralCode", authorize("admin", "operator"), async (req,
 // ############################################
 // ############################################
 // ############################################
-router.post("/getNetwork/:userID", authorize("admin", "operator"), async (req, res) => {
+router.get("/getNetwork/:userID", authorize("admin", "operator"), async (req, res) => {
 
 
   let userId = req.params.userID;
