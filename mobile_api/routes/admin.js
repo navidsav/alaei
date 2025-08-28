@@ -148,6 +148,20 @@ router.get("/getNetwork/:userID", authorize("admin", "operator"), async (req, re
         $match: {
           "referredBy.id": new mongodb.ObjectId(userId)
         }
+      },
+      {
+        $project: {
+          referredBy: 1,
+          ref_info: 1,
+          username: 1,
+          firstName: 1,
+          lastName: 1,
+          phoneNumber: 1,
+          role: 1,
+          nationalCode: 1,
+          _id: 1,
+          refferal_code: 1
+        }
       }
 
     ];
