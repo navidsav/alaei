@@ -194,6 +194,9 @@ router.get("/getCodes", authorize("admin", "operator"), queryBuilder, async (req
 
   try {
 
+    let { filter } = req.query;
+
+
     notUsedCodesAgg = [
       {
         $lookup: {
@@ -269,6 +272,30 @@ router.get("/getCodes", authorize("admin", "operator"), queryBuilder, async (req
           owner: 1,
           updatedAt: 1
         }
+      },
+      {
+        $match: {
+          $or: [
+            {
+              "owner.phoneNumber": {
+                $regex: filter,
+                $options: "i"
+              }
+            },
+            {
+              "owner.firstName": {
+                $regex: filter,
+                $options: "i"
+              }
+            },
+            {
+              "owner.lastName": {
+                $regex: filter,
+                $options: "i"
+              }
+            }
+          ]
+        }
       }
     ];
 
@@ -282,6 +309,38 @@ router.get("/getCodes", authorize("admin", "operator"), queryBuilder, async (req
     }
 
 
+
+
+    let total = -1;
+
+    let totalAgg = [...usedCodesAgg, {
+      $count: "total"
+    }]
+
+    total = await db.aggregate("referral_code", totalAgg);
+
+
+    if (!filter && req.mongoQuery.skip) {
+
+      usedCodesAgg.push({
+        $skip: req.mongoQuery.skip
+      });
+    }
+    if (!filter && req.mongoQuery.limit) {
+      usedCodesAgg.push({
+        $limit: req.mongoQuery.limit
+      });
+    }
+
+    let datalen = -1;
+
+    let datalenAgg = [...usedCodesAgg, {
+      $count: "data_len"
+    }]
+
+    datalen = await db.aggregate("referral_code", datalenAgg);
+
+
     const used_codes = await db.aggregate("referral_code", usedCodesAgg)
 
 
@@ -290,6 +349,8 @@ router.get("/getCodes", authorize("admin", "operator"), queryBuilder, async (req
 
     return responseHandler.okResponse(res, "Here you are!", {
       used: used_codes,
+      used_total_len: total.length > 0 ? total[0].total : 0,
+      used_data_len: datalen.length > 0 ? datalen[0].data_len : 0,
       not_used: not_used_codes
     })
 
