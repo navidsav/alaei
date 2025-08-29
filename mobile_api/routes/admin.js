@@ -247,6 +247,11 @@ router.get("/getCodes", authorize("admin", "operator"), queryBuilder, async (req
         }
       },
       {
+        $addFields: {
+          _id: "$users._id"
+        }
+      },
+      {
         $replaceRoot: {
           newRoot: {
             $mergeObjects: ["$users", "$$ROOT"]
