@@ -2,6 +2,24 @@ const mongodb = require("mongodb");
 
 const aggAdder = (req, res, next) => {
 
+
+
+    if (req.params.userID && req.user.role && req.user.role.name == "admin") {
+
+        req.userAggregation = {
+            $match: {
+                _id: new mongodb.ObjectId(req.params.userID)
+            }
+        }
+    }
+    else { // dont care (x)
+        req.userAggregation = {
+            $match: {
+                _id: new mongodb.ObjectId(req.user.id)
+            }
+        };
+    }
+
     if (req.user && req.user.role && req.user.role.name != "admin") {
         req.statusAggregation = {
             $match: {

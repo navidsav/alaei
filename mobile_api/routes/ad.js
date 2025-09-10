@@ -454,7 +454,7 @@ router.get("/getad/:carAdId", authenticate, aggAdder, queryBuilder, async (req, 
 // ############################################
 // ############################################
 // ############################################
-router.get("/getMyAds", authenticate, aggAdder, queryBuilder, async (req, res) => {
+router.get("/getMyAds/:userID", authenticate, aggAdder, queryBuilder, async (req, res) => {
 
   try {
 
@@ -494,11 +494,7 @@ router.get("/getMyAds", authenticate, aggAdder, queryBuilder, async (req, res) =
           can_edit: { $eq: ["$_id", new mongodb.ObjectId(req.user.id)] }
         }
       },
-      {
-        $match: {
-          _id: new mongodb.ObjectId(req.user.id)
-        }
-      },
+      req.userAggregation,
       {
         $project: {
           _id: 0,
@@ -579,6 +575,7 @@ router.get("/getMyAds", authenticate, aggAdder, queryBuilder, async (req, res) =
 router.get("/getAds", authenticate, aggAdder, queryBuilder, async (req, res) => {
 
   try {
+
 
 
     let { phoneNumber, name, payment } = req.query;
