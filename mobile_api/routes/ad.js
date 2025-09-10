@@ -454,7 +454,7 @@ router.get("/getad/:carAdId", authenticate, aggAdder, queryBuilder, async (req, 
 // ############################################
 // ############################################
 // ############################################
-router.get("/getMyAds/:userID", authenticate, aggAdder, queryBuilder, async (req, res) => {
+router.get("/getMyAds/:userID?", authenticate, aggAdder, queryBuilder, async (req, res) => {
 
   try {
 
