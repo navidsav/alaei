@@ -242,7 +242,7 @@ router.get("/getProductionYearsv2", queryBuilder, async (req, res) => {
     }
 
     const GregorianYears = [];
-    for (let i = 2000; i < (new Date().getFullYear()); ++i) {
+    for (let i = 2000; i <= (new Date().getFullYear()); ++i) {
       GregorianYears.push(i);
     }
 
