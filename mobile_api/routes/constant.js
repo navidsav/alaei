@@ -229,6 +229,33 @@ router.get("/getProductionYears", queryBuilder, async (req, res) => {
   }
 });
 
+// ############################################
+// ############################################
+// ############################################
+router.get("/getProductionYearsv2", queryBuilder, async (req, res) => {
+
+  try {
+
+    const years = [];
+    for (let i = 1370; i < 1405; ++i) {
+      years.push(i);
+    }
+
+    const GregorianYears = [];
+    for (let i = 2000; i < (new Date().getFullYear()); ++i) {
+      GregorianYears.push(i);
+    }
+
+    // Respond with the car details
+    return response_handler.okResponse(res, "here you are", {
+      Shamsi: years,
+      Gregorian: GregorianYears
+    })
+  } catch (error) {
+    logger.error({ event: "HTTP GET ERROR ", error: error?.message })
+    response_handler.errorResponse(res, "Server error", error)
+  }
+});
 
 // ############################################
 // ############################################
