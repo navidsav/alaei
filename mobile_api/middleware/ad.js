@@ -41,8 +41,15 @@ const aggAdder = (req, res, next) => {
     }
     else {
         req.statusAggregation = {
-            $project: {
-                s: 0
+            $match: {
+                $or: [
+                    {
+                        "registeredCarAds.status.value": 100 // motasher shode
+                    },
+                    {
+                        "registeredCarAds.status.value": 0 // checking
+                    },
+                ]
             }
         }
         req.userProjection = {
