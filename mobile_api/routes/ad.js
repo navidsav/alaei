@@ -180,7 +180,7 @@ router.post("/add/:targetAdId?", authenticate, authorize("admin", "operator"), u
       let updatingAd = { ...insertThis, _id: new mongodb.ObjectId(req.params.targetAdId) }
 
       if (req.files.length > 0) {
-        const imageUrls = req.files.map(file => `${config.CDN_URL}/alaei/uploads/${file.filename}`);
+        const imageUrls = req.files.map(file => `${config.CDN_URL}/uploads/${file.filename}`);
 
         updatingAd.imageUrls = imageUrls
       }
@@ -227,7 +227,7 @@ router.post("/add/:targetAdId?", authenticate, authorize("admin", "operator"), u
     } else {
 
       if (req.files.length > 0) {
-        const imageUrls = req.files.map(file => `${config.CDN_URL}/alaei/uploads/${file.filename}`);
+        const imageUrls = req.files.map(file => `${config.CDN_URL}/uploads/${file.filename}`);
 
         insertThis.imageUrls = imageUrls
       }
