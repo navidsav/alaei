@@ -40,7 +40,7 @@ const { loadAdStatus } = require("../../common/car/ad_status");
 // تنظیم محل ذخیره فایل‌ها و فرمت نام فایل
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
-    cb(null, '/var/www/cdn/alaei/uploads'); // پوشه مقصد (باید وجود داشته باشد یا ساخته شود)
+    cb(null, '/var/www/cdn.autoalaei.ir/uploads'); // پوشه مقصد (باید وجود داشته باشد یا ساخته شود)
   },
   filename: (req, file, cb) => {
     const ext = path.extname(file.originalname);
