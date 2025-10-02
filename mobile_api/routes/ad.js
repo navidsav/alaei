@@ -283,6 +283,8 @@ router.post("/verify", authenticate, authorize("admin", "operator"), upload.arra
 
     let {
       trim_id,
+      model_id,
+      brand_id,
       production_year,
       delivery_status_type,
       delivery_status_value,
@@ -304,26 +306,46 @@ router.post("/verify", authenticate, authorize("admin", "operator"), upload.arra
     let trim = await db.aggregate("carbrands", [
       {
         $unwind: {
-          path: "$CarModels"
+          path: "$CarModels",
+          preserveNullAndEmptyArrays: true
         }
       },
 
       {
         $unwind: {
-          path: "$CarModels.CarModelDetails"
+          path: "$CarModels.CarModelDetails",
+          preserveNullAndEmptyArrays: true
         }
       },
+
       {
         $match: {
-          "CarModels.CarModelDetails._id": new mongodb.ObjectId(trim_id)
+          _id: new mongodb.ObjectId(brand_id),
+          ...(model_id && model_id !== "-1"
+            ? { "CarModels._id": new mongodb.ObjectId(model_id) }
+            : {}),
+          ...(trim_id && trim_id !== "-1"
+            ? { "CarModels.CarModelDetails._id": new mongodb.ObjectId(trim_id) }
+            : {})
         }
       },
+
       {
         $project: {
           _id: 0,
-          BrandTitle: 1,
-          CarModelTitle: "$CarModels.CarModelTitle",
-          CarModelDetail: "$CarModels.CarModelDetails.CarModelDetailTitle"
+          Brand: {
+            _id: "$_id",
+            BrandTitle: "$BrandTitle"
+          },
+          CarModel: {
+            _id: "$CarModels._id",
+            CarModelTitle: "$CarModels.CarModelTitle"
+          },
+          CarModelDetail: {
+            _id: "$CarModels.CarModelDetails._id",
+            CarModelDetailTitle:
+              "$CarModels.CarModelDetails.CarModelDetailTitle"
+          }
         }
       }
     ])
