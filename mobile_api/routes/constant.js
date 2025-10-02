@@ -7,10 +7,15 @@ const mongodb = require("mongodb");
 
 const config = require("../../config.json");
 const delivery_status = require("../../common/car/delivery_status");
+const { loadInsuranceMonth } = require("../../common/car/insurance_month");
 const { loadBodyStatus } = require("../../common/car/body_status");
 let body_status = [];
 (async () => {
   body_status = await loadBodyStatus()
+})();
+let insurance_month = [];
+(async () => {
+  insurance_month = await loadInsuranceMonth()
 })();
 const colors = require("../../common/car/colors");
 const colors_interior = require("../../common/car/colors_interior");
@@ -399,6 +404,15 @@ router.get("/getDeliveryStatus", async (req, res) => {
 
 })
 
+
+// ############################################
+// ############################################
+// ############################################
+router.get("/getInsuranceMonth", async (req, res) => {
+
+  return response_handler.okResponse(res, "Car insurance month", insurance_month)
+
+})
 
 // ############################################
 // ############################################
