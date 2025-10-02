@@ -10,9 +10,14 @@ const { aggAdder } = require("../middleware/ad")
 
 const delivery_status = require("../../common/car/delivery_status");
 const { loadBodyStatus } = require("../../common/car/body_status");
+const { loadInsuranceMonth } = require("../../common/car/insurance_month");
 let body_status = [];
 (async () => {
   body_status = await loadBodyStatus()
+})();
+let insurance_month = [];
+(async () => {
+  insurance_month = await loadInsuranceMonth()
 })();
 const colors = require("../../common/car/colors");
 const colors_interior = require("../../common/car/colors_interior");
@@ -72,6 +77,7 @@ router.post("/add/:targetAdId?", authenticate, authorize("admin", "operator"), u
       delivery_status_value,
       body_color_value,
       interior_color_value,
+      insurance_month_value,
       body_status_value,
       payment_type_value,
       payment_total_price,
@@ -151,6 +157,7 @@ router.post("/add/:targetAdId?", authenticate, authorize("admin", "operator"), u
       body_color: colors.find(o => o.value == body_color_value),
       interior_color: colors_interior.find(o => o.value == interior_color_value),
       body_status: body_status.find(o => o.value == body_status_value),
+      insurance_month: insurance_month.find(o => o.value == insurance_month_value),
       payment_type: payment_type.find(o => o.value == payment_type_value),
       payment_total_price: payment_total_price,
       installment_total_price: installment_total_price,
@@ -291,6 +298,7 @@ router.post("/verify", authenticate, authorize("admin", "operator"), upload.arra
       body_color_value,
       interior_color_value,
       body_status_value,
+      insurance_month_value,
       payment_type_value,
       payment_total_price,
       installment_total_price,
@@ -363,6 +371,7 @@ router.post("/verify", authenticate, authorize("admin", "operator"), upload.arra
       body_color: colors.find(o => o.value == body_color_value),
       interior_color: colors_interior.find(o => o.value == interior_color_value),
       body_status: body_status.find(o => o.value == body_status_value),
+      insurance_month: insurance_month.find(o => o.value == insurance_month_value),
       payment_type: payment_type.find(o => o.value == payment_type_value),
       payment_total_price: payment_total_price,
       installment_total_price: installment_total_price,
