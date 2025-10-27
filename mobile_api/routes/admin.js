@@ -467,6 +467,49 @@ router.get("/getAdRequests", authenticate, authorize("admin"), queryBuilder, asy
 });
 
 
+// ############################################
+// ############################################
+// ############################################
+// RESET PASSWORD
+router.post("/resetpassword", authenticate, authorize("admin"), async (req, res) => {
+  try {
+
+    const { userId, newPassword, confirmNewPassword } = req.body;
+
+    // Check if user exists
+    const user = await User.findById(userId);
+
+    //TODO: the reponse can be attacked and fuzzed :-(
+    if (!user) return responseHandler.nokResponse(res, `User not found!`);
+
+    // Compare passwords
+    // const isMatch = await bcrypt.compare(currentPassword + user.salt, user.password);
+
+    // if (!isMatch)
+    //   return responseHandler.nokResponse(res, `Invalid credentials!`);
+
+    if (newPassword != confirmNewPassword)
+      return responseHandler.nokResponse(res, `Please correct and retype password!`);
+
+    // Hash password
+    const salt = await bcrypt.genSalt(10);
+    const hashedPassword = await bcrypt.hash(newPassword + salt, 10);
+    // Save user
+    user.salt = salt;
+    user.password = hashedPassword;
+    await user.save();
+
+    return responseHandler.okResponse(res, "Password has been changed successfully", {})
+  } catch (error) {
+
+    console.log(error)
+    return responseHandler.errorResponse(res, "Server error", {})
+
+  }
+});
+
+
+
 
 
 mongo(config.DB_URI, config.MOBILE_DB_NAME)
