@@ -17,6 +17,8 @@ const router = express.Router();
 
 const generateCode = require("../../common/code_generator");
 const agency = require("../../common/admin/agency");
+const bcrypt = require("bcryptjs");
+
 
 
 // ############################################
