@@ -9,18 +9,17 @@ const UserSchema = new mongoose.Schema({
   phoneNumber: { type: String, required: true, unique: true },
   verificationCode: { type: Number },
   verificationDate: { type: Date },
-  status: {
-    _id: Schema.Types.ObjectId,
-    title: { type: String },
-    value: { type: Number },
-  },
+  status: { type: String },
   salt: { type: String },
   password: { type: String },
   referralCode: { type: String },
   registeredCarAds: [
     {
-      status: { type: String, required: true, enum: ["complete", "pending"] },
-
+      status: {
+        _id: Schema.Types.ObjectId,
+        title: { type: String },
+        value: { type: Number },
+      },
       carInfo: {
         numberPlate: { type: String },
         carModelId: Schema.Types.ObjectId,
