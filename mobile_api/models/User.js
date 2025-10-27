@@ -9,7 +9,11 @@ const UserSchema = new mongoose.Schema({
   phoneNumber: { type: String, required: true, unique: true },
   verificationCode: { type: Number },
   verificationDate: { type: Date },
-  status: { type: String },
+  status: {
+    _id: Schema.Types.ObjectId,
+    title: { type: String },
+    value: { type: Number },
+  },
   salt: { type: String },
   password: { type: String },
   referralCode: { type: String },

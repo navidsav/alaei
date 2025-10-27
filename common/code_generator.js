@@ -8,5 +8,5 @@ module.exports = ({ agencyCode, year, cityName, personIndex }) => {
   const cityCode = cityName.slice(0, 3).toUpperCase(); // "Tehran" -> "TEH"
   const personCode = String(personIndex).padStart(3, '0'); // 5 -> "005"
 
-  return `${year}${month}-${agencyCode}-${cityCode}-${personCode}`;
+  return `${agencyCode}${cityCode}${personCode}`;
 }
