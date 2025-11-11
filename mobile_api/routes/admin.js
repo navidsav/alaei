@@ -585,10 +585,49 @@ router.get("/network", authenticate, authorize("admin"), async (req, res) => {
       }
     }
 
-    console.log(JSON.stringify(elements, null, 2));
+    const nodes = [];
+    const edges = [];
+
+    elements.forEach(doc => {
+      if (doc.parent && doc.parent.id) {
+        // اضافه کردن parent node
+        if (!nodes.some(n => n.data.id === doc.parent.id.toString())) {
+          nodes.push({
+            data: {
+              id: doc.parent.id.toString(),
+              label: `${doc.parent.firstName} ${doc.parent.lastName} (${doc.parent.username})`,
+              role: "parent"
+            }
+          });
+        }
+
+        // اضافه کردن child node
+        if (doc.child && doc.child._id) {
+          if (!nodes.some(n => n.data.id === doc.child._id.toString())) {
+            nodes.push({
+              data: {
+                id: doc.child._id.toString(),
+                label: `${doc.child.firstName} ${doc.child.lastName} (${doc.child.username})`,
+                role: "child"
+              }
+            });
+          }
+
+          // ساخت edge
+          edges.push({
+            data: {
+              source: doc.parent.id.toString(),
+              target: doc.child._id.toString()
+            }
+          });
+        }
+      }
+    });
+
+    const graphData = { nodes, edges };
 
 
-    return responseHandler.okResponse(res, "Here you are", { elements: elements })
+    return responseHandler.okResponse(res, "Here you are", { graphData: graphData })
 
 
   }
