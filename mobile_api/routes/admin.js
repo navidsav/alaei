@@ -503,13 +503,102 @@ router.post("/resetpassword", authenticate, authorize("admin"), async (req, res)
 
     return responseHandler.okResponse(res, "Password has been changed successfully", {})
   } catch (error) {
+    logger.error({ error: error })
 
-    console.log(error)
     return responseHandler.errorResponse(res, "Server error", {})
 
   }
 });
 
+
+router.get("/network", authenticate, authorize("admin"), async (req, res) => {
+
+  try {
+
+    let networkAgg = [
+      {
+        $lookup: {
+          from: "users",
+          localField: "code",
+          foreignField: "referralCode",
+          as: "child"
+        }
+      },
+      {
+        $project: {
+          code: 1,
+          parent: "$owner",
+          child: {
+            $let: {
+              vars: {
+                c: { $arrayElemAt: ["$child", 0] }
+              },
+              in: {
+                _id: "$$c._id",
+                username: "$$c.username",
+                firstName: "$$c.firstName",
+                lastName: "$$c.lastName"
+              }
+            }
+          }
+        }
+      }
+    ];
+    const referralData = await db.aggregate("referral_code", networkAgg);
+
+
+
+    const elements = [];
+    const addedNodes = new Set();
+
+    for (const doc of referralData) {
+      const parent = doc.parent;
+      const child = doc.child;
+
+      if (parent && parent.id && !addedNodes.has(parent.id)) {
+        elements.push({
+          data: {
+            id: parent.id,
+            label: `${parent.firstName} ${parent.lastName} (${parent.username})`,
+            role: doc.role || "parent"
+          }
+        });
+        addedNodes.add(parent.id);
+      }
+
+      if (child && child._id && !addedNodes.has(child._id)) {
+        elements.push({
+          data: {
+            id: child._id,
+            label: `${child.firstName} ${child.lastName} (${child.username})`,
+            role: doc.role || "child"
+          }
+        });
+        addedNodes.add(child._id);
+      }
+
+      // حالا edge بین parent و child
+      if (parent && parent.id && child && child._id) {
+        elements.push({
+          data: { source: parent.id, target: child._id }
+        });
+      }
+    }
+
+    console.log(JSON.stringify(elements, null, 2));
+
+
+    return responseHandler.okResponse(res, "Here you are", { elements: elements })
+
+
+  }
+  catch (error) {
+    logger.error({ error: error })
+    return responseHandler.errorResponse(res, "Server error", {})
+
+  }
+
+});
 
 
 
