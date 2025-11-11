@@ -544,7 +544,7 @@ router.get("/network", authenticate, authorize("admin"), async (req, res) => {
         }
       }
     ];
-    const referralData = await db.aggregate("referral_code", networkAgg).toArray();
+    const referralData = await db.aggregate("referral_code", networkAgg);
     const nodes = [];
     const edges = [];
 
