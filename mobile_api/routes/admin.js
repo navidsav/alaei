@@ -544,49 +544,47 @@ router.get("/network", authenticate, authorize("admin"), async (req, res) => {
         }
       }
     ];
-    const referralData = await db.aggregate("referral_code", networkAgg);
+    const referralData = await db.aggregate("referral_code", networkAgg).toArray();
+    const nodes = [];
+    const edges = [];
 
+    referralData.forEach(doc => {
+      if (doc.parent && doc.parent.id) {
+        // اضافه کردن parent node
+        if (!nodes.some(n => n.data.id === doc.parent.id.toString())) {
+          nodes.push({
+            data: {
+              id: doc.parent.id.toString(),
+              label: `${doc.parent.firstName} ${doc.parent.lastName} (${doc.parent.username})`,
+              role: "parent"
+            }
+          });
+        }
 
-
-    const elements = [];
-    const addedNodes = new Set();
-
-    for (const doc of referralData) {
-      const parent = doc.parent;
-      const child = doc.child;
-
-      if (parent && parent.id && !addedNodes.has(parent.id)) {
-        elements.push({
-          data: {
-            id: parent.id,
-            label: `${parent.firstName} ${parent.lastName} (${parent.username})`,
-            role: doc.role || "parent"
+        // اضافه کردن child node
+        if (doc.child && doc.child._id) {
+          if (!nodes.some(n => n.data.id === doc.child._id.toString())) {
+            nodes.push({
+              data: {
+                id: doc.child._id.toString(),
+                label: `${doc.child.firstName} ${doc.child.lastName} (${doc.child.username})`,
+                role: "child"
+              }
+            });
           }
-        });
-        addedNodes.add(parent.id);
+
+          // ساخت edge
+          edges.push({
+            data: {
+              source: doc.parent.id.toString(),
+              target: doc.child._id.toString()
+            }
+          });
+        }
       }
+    });
 
-      if (child && child._id && !addedNodes.has(child._id)) {
-        elements.push({
-          data: {
-            id: child._id,
-            label: `${child.firstName} ${child.lastName} (${child.username})`,
-            role: doc.role || "child"
-          }
-        });
-        addedNodes.add(child._id);
-      }
-
-      // حالا edge بین parent و child
-      if (parent && parent.id && child && child._id) {
-        elements.push({
-          data: { source: parent.id, target: child._id }
-        });
-      }
-    }
-
-    const graphData = { addedNodes, elements };
-
+    const graphData = { nodes, edges };
 
     return responseHandler.okResponse(res, "Here you are", { graphData: graphData })
 
